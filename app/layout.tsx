@@ -5,6 +5,14 @@ export const metadata: Metadata = {
   title: "ABE | Recuperação de Crédito B2B",
   description:
     "Site institucional da ABE com ecossistema completo de recuperação de crédito, cobrança preventiva, cobrança digital e suporte jurídico.",
+  icons: {
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/favicon.png",
+    shortcut: "/favicon.png",
+  },
 };
 
 const themeScript = `

@@ -586,9 +586,12 @@ img {
 }
 
 .siteSection--dark .sectionHeader h2,
-.siteSection--dark .productCard h3,
 .siteSection--dark .onlinePanel h3 {
   color: var(--text);
+}
+
+.siteSection--dark .productCard h3 {
+  color: #0f172a;
 }
 
 .siteSection--dark .heroBadge,
@@ -597,17 +600,23 @@ img {
 }
 
 .siteSection--dark .sectionHeader p,
-.siteSection--dark .productCard p,
 .siteSection--dark .diffCard p,
 .siteSection--dark .onlinePanel p {
   color: var(--muted);
 }
 
-.siteSection--dark .productCard,
+.siteSection--dark .productCard p {
+  color: #475569;
+}
+
 .siteSection--dark .diffCard,
 .siteSection--dark .onlinePanel,
 .siteSection--dark .sectionHeader .eyebrow {
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+.siteSection--dark .productCard {
+  border-color: color-mix(in srgb, var(--line) 70%, #cbd5e1);
 }
 
 /* Modo claro: contraste forte nos blocos de seção (título + lead + cartões da faixa) */
@@ -651,7 +660,7 @@ img {
 }
 
 :root[data-theme="light"] .siteSection--dark .productCard {
-  background: var(--panel-strong);
+  background: #ffffff;
   border-color: color-mix(in srgb, var(--line) 88%, var(--brand));
 }
 
@@ -902,8 +911,9 @@ img {
 
 .productCard {
   padding: 24px;
-  background: color-mix(in srgb, var(--panel-strong) 55%, rgba(255, 255, 255, 0.06));
-  border: 1px solid color-mix(in srgb, var(--line) 90%, transparent);
+  background: #ffffff;
+  border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+  backdrop-filter: none;
 }
 
 .productLogoWrap {
@@ -923,6 +933,18 @@ img {
   max-height: 52px;
   width: auto;
   max-width: min(220px, 100%);
+}
+
+#ecossistema .productLogoWrap {
+  min-height: 100px;
+  max-height: 140px;
+  padding: 12px 8px 16px;
+}
+
+#ecossistema .productLogo {
+  max-height: 88px;
+  max-width: min(320px, 100%);
+  width: auto;
 }
 
 .collectionLayout,
@@ -1350,65 +1372,6 @@ img {
   line-height: 1.65;
 }
 
-.mapUfBar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 18px 0 4px;
-}
-
-.mapUfChip {
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  padding: 8px 12px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  background: color-mix(in srgb, var(--panel-strong) 80%, transparent);
-  color: var(--muted);
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-.mapUfChip:hover {
-  border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
-  color: var(--text);
-}
-
-.mapUfChip.isActive {
-  background: var(--brand);
-  color: #fff;
-  border-color: var(--brand);
-}
-
-.mapUfBar--scroll {
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  margin-bottom: 0;
-  gap: 8px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--brand) 55%, #334155) color-mix(in srgb, var(--panel-strong) 70%, #0f172a);
-}
-
-.mapUfBar--scroll::-webkit-scrollbar {
-  height: 7px;
-}
-
-.mapUfBar--scroll::-webkit-scrollbar-track {
-  background: color-mix(in srgb, var(--text) 8%, var(--panel-strong));
-  border-radius: 999px;
-}
-
-.mapUfBar--scroll::-webkit-scrollbar-thumb {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--brand) 70%, #1e293b), color-mix(in srgb, var(--accent) 50%, #334155));
-  border-radius: 999px;
-}
-
-.mapUfBar--scroll::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--brand) 85%, #0f172a);
-}
-
 .brazilMapWrap {
   margin-top: 4px;
 }
@@ -1455,10 +1418,12 @@ img {
 
 .brazilMapTooltip {
   position: fixed;
-  z-index: 50;
+  z-index: 500;
   pointer-events: none;
-  transform: translate(-50%, calc(-100% - 14px));
+  /* Ancorado ao cursor (viewport); portal em document.body evita desvio por transform em ancestrais */
+  transform: translate(-50%, calc(-100% - 12px));
   min-width: 156px;
+  max-width: min(240px, calc(100vw - 24px));
   padding: 10px 12px;
   border-radius: 12px;
   background: var(--panel-strong);

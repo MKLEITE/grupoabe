@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- pacote sem tipos
 // @ts-expect-error
 import brazilMap from "@svg-country-maps/brazil";
@@ -17,9 +18,13 @@ function recoveryPercentForUf(uf: string): number {
 
 export function BrazilMapInteractive() {
   const data = brazilMap as MapData;
+  const [mounted, setMounted] = useState(false);
   const [hoverId, setHoverId] = useState<string | null>(null);
-  const [filterUf, setFilterUf] = useState<string | null>(null);
   const [tip, setTip] = useState<{ x: number; y: number; id: string } | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const recoveryMap = useMemo(() => {
     const m: Record<string, number> = {};
@@ -27,10 +32,6 @@ export function BrazilMapInteractive() {
       m[loc.id.toUpperCase()] = recoveryPercentForUf(loc.id);
     }
     return m;
-  }, [data.locations]);
-
-  const sortedUfs = useMemo(() => {
-    return [...data.locations].sort((a, b) => a.id.localeCompare(b.id));
   }, [data.locations]);
 
   const moveTip = useCallback((e: React.MouseEvent, id: string) => {
@@ -43,25 +44,6 @@ export function BrazilMapInteractive() {
 
   return (
     <div className="brazilMapWrap">
-      <div className="mapUfBar mapUfBar--scroll" role="tablist" aria-label="Destacar estado no mapa">
-        <button type="button" className={`mapUfChip ${filterUf === null ? "isActive" : ""}`} onClick={() => setFilterUf(null)}>
-          Todos
-        </button>
-        {sortedUfs.map((loc) => {
-          const uf = loc.id.toUpperCase();
-          return (
-            <button
-              key={loc.id}
-              type="button"
-              className={`mapUfChip ${filterUf === uf ? "isActive" : ""}`}
-              onClick={() => setFilterUf(filterUf === uf ? null : uf)}
-            >
-              {uf}
-            </button>
-          );
-        })}
-      </div>
-
       <div className="brazilMapStage">
         <svg
           className="brazilMapSvg"
@@ -72,17 +54,14 @@ export function BrazilMapInteractive() {
         >
           {data.locations.map((loc) => {
             const uf = loc.id.toUpperCase();
-            const dim =
-              filterUf !== null && filterUf !== uf ? "brazilMap__path--dim" : "";
             const hi = hoverId === loc.id ? "brazilMap__path--hover" : "";
-            const sel = filterUf === uf ? "brazilMap__path--selected" : "";
             const aria = `${loc.name}, recuperação ilustrativa ${recoveryMap[uf]} por cento.`;
             return (
               <path
                 key={loc.id}
                 id={`uf-${loc.id}`}
                 d={loc.path}
-                className={`brazilMap__path ${dim} ${hi} ${sel}`}
+                className={`brazilMap__path ${hi}`}
                 aria-label={aria}
                 onMouseEnter={(e) => {
                   setHoverId(loc.id);
@@ -93,31 +72,30 @@ export function BrazilMapInteractive() {
                   setHoverId(null);
                   setTip(null);
                 }}
-                onClick={() => {
-                  const u = loc.id.toUpperCase();
-                  setFilterUf((prev) => (prev === u ? null : u));
-                }}
               />
             );
           })}
         </svg>
-
-        {tip && tipName ? (
-          <div
-            className="brazilMapTooltip"
-            style={{
-              left: tip.x,
-              top: tip.y,
-            }}
-            role="tooltip"
-          >
-            <span className="brazilMapTooltip__uf">{tipUf}</span>
-            <span className="brazilMapTooltip__name">{tipName}</span>
-            <span className="brazilMapTooltip__kpi">Recuperação {tipPct}%</span>
-            <span className="brazilMapTooltip__hint">Indicador ilustrativo</span>
-          </div>
-        ) : null}
       </div>
+
+      {mounted && tip && tipName
+        ? createPortal(
+            <div
+              className="brazilMapTooltip"
+              style={{
+                left: tip.x,
+                top: tip.y,
+              }}
+              role="tooltip"
+            >
+              <span className="brazilMapTooltip__uf">{tipUf}</span>
+              <span className="brazilMapTooltip__name">{tipName}</span>
+              <span className="brazilMapTooltip__kpi">Recuperação {tipPct}%</span>
+              <span className="brazilMapTooltip__hint">Indicador ilustrativo</span>
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   );
 }

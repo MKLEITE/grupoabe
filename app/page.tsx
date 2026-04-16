@@ -38,51 +38,55 @@ const channels: Channel[] = [
   { key: "internas", label: "Fases Internas", icon: "internas", description: "Fluxos especializados para conduzir a carteira com inteligência e progressão." },
 ];
 
+/**
+ * Mix ilustrativo por segmento (soma 100%). Cada canal entre ~10% e 60%: com 7 canais e mínimo 10%,
+ * o máximo teórico por canal é 40%; valores até 35–40% nos que têm maior peso.
+ */
 const recoveryData: Record<SegmentName, DataPoint[]> = {
   Industrial: [
-    { channel: "WhatsApp", value: 22 },
-    { channel: "SMS", value: 11 },
-    { channel: "E-mail", value: 17 },
-    { channel: "Chatbot", value: 14 },
-    { channel: "Ligação", value: 28 },
-    { channel: "Presencial", value: 35 },
-    { channel: "Fases Internas", value: 19 },
+    { channel: "WhatsApp", value: 40 },
+    { channel: "SMS", value: 10 },
+    { channel: "E-mail", value: 10 },
+    { channel: "Chatbot", value: 10 },
+    { channel: "Ligação", value: 10 },
+    { channel: "Presencial", value: 10 },
+    { channel: "Fases Internas", value: 10 },
   ],
   Varejo: [
-    { channel: "WhatsApp", value: 34 },
-    { channel: "SMS", value: 21 },
-    { channel: "E-mail", value: 18 },
-    { channel: "Chatbot", value: 29 },
-    { channel: "Ligação", value: 22 },
-    { channel: "Presencial", value: 16 },
-    { channel: "Fases Internas", value: 20 },
+    { channel: "WhatsApp", value: 25 },
+    { channel: "SMS", value: 15 },
+    { channel: "E-mail", value: 15 },
+    { channel: "Chatbot", value: 12 },
+    { channel: "Ligação", value: 11 },
+    { channel: "Presencial", value: 11 },
+    { channel: "Fases Internas", value: 11 },
   ],
   Serviços: [
-    { channel: "WhatsApp", value: 27 },
+    { channel: "WhatsApp", value: 22 },
     { channel: "SMS", value: 14 },
-    { channel: "E-mail", value: 24 },
-    { channel: "Chatbot", value: 19 },
-    { channel: "Ligação", value: 31 },
-    { channel: "Presencial", value: 21 },
-    { channel: "Fases Internas", value: 23 },
+    { channel: "E-mail", value: 14 },
+    { channel: "Chatbot", value: 13 },
+    { channel: "Ligação", value: 12 },
+    { channel: "Presencial", value: 15 },
+    { channel: "Fases Internas", value: 10 },
   ],
   Saúde: [
     { channel: "WhatsApp", value: 20 },
-    { channel: "SMS", value: 10 },
-    { channel: "E-mail", value: 26 },
-    { channel: "Chatbot", value: 15 },
-    { channel: "Ligação", value: 29 },
-    { channel: "Presencial", value: 24 },
-    { channel: "Fases Internas", value: 22 },
+    { channel: "SMS", value: 15 },
+    { channel: "E-mail", value: 14 },
+    { channel: "Chatbot", value: 13 },
+    { channel: "Ligação", value: 12 },
+    { channel: "Presencial", value: 14 },
+    { channel: "Fases Internas", value: 12 },
   ],
   Distribuição: [
-    { channel: "WhatsApp", value: 24 },
-    { channel: "SMS", value: 13 },
-    { channel: "E-mail", value: 19 },
-    { channel: "Chatbot", value: 17 },
-    { channel: "Ligação", value: 30 },
-    { channel: "Presencial", value: 32 },
-    { channel: "Fases Internas", value: 21 },
+    { channel: "WhatsApp", value: 30 },
+    { channel: "SMS", value: 14 },
+    { channel: "E-mail", value: 13 },
+    { channel: "Chatbot", value: 12 },
+    { channel: "Ligação", value: 11 },
+    { channel: "Presencial", value: 10 },
+    { channel: "Fases Internas", value: 10 },
   ],
 };
 
@@ -170,12 +174,40 @@ const channelLabelToDataKey: Record<string, string> = {
   "Fases Internas": "Fases Internas",
 };
 
-function maxValue(data: DataPoint[]) {
-  return Math.max(...data.map((item) => item.value));
-}
-
 function sumValues(data: DataPoint[]) {
   return data.reduce((acc, item) => acc + item.value, 0);
+}
+
+/** Converte pesos relativos em percentuais que somam 100% no segmento (mesma base do gráfico e do anel). */
+function normalizeMixTo100Percent(points: DataPoint[]): DataPoint[] {
+  const sum = sumValues(points);
+  if (sum <= 0) {
+    return points.map((p) => ({ ...p, value: 0 }));
+  }
+  const scaled = points.map((p) => ({
+    channel: p.channel,
+    value: (p.value / sum) * 100,
+  }));
+  const rounded = scaled.map((p) => ({
+    channel: p.channel,
+    value: Math.round(p.value * 10) / 10,
+  }));
+  let s = rounded.reduce((acc, p) => acc + p.value, 0);
+  const drift = Math.round((100 - s) * 10) / 10;
+  if (rounded.length > 0 && Math.abs(drift) >= 0.001) {
+    const last = rounded.length - 1;
+    rounded[last] = {
+      ...rounded[last],
+      value: Math.round((rounded[last].value + drift) * 10) / 10,
+    };
+  }
+  return rounded;
+}
+
+function formatMixPercent(value: number): string {
+  const v = Math.round(value * 10) / 10;
+  if (Math.abs(v - Math.round(v)) < 0.001) return `${Math.round(v)}%`;
+  return `${v.toFixed(1)}%`;
 }
 
 function KpiCard({ label, value, sub }: { label: string; value: string; sub: string }) {
@@ -382,17 +414,16 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow?: string; titl
 }
 
 function ProgressBars({ data, highlightLabel }: { data: DataPoint[]; highlightLabel?: string }) {
-  const biggest = maxValue(data);
   return (
     <div className="barChart reveal">
       {data.map((item) => (
         <div key={item.channel} className={`barRow ${highlightLabel === item.channel ? "barRow--hl" : ""}`}>
           <div className="barMeta">
             <span>{item.channel}</span>
-            <strong>{item.value}%</strong>
+            <strong>{formatMixPercent(item.value)}</strong>
           </div>
           <div className="barTrack">
-            <div className="barFill" style={{ width: `${(item.value / biggest) * 100}%` }} />
+            <div className="barFill" style={{ width: `${Math.min(100, Math.max(0, item.value))}%` }} />
           </div>
         </div>
       ))}
@@ -423,21 +454,23 @@ export default function HomePage() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("estrutura");
 
-  const currentData = useMemo(() => recoveryData[selectedSegment], [selectedSegment]);
+  const currentData = useMemo(
+    () => normalizeMixTo100Percent(recoveryData[selectedSegment]),
+    [selectedSegment]
+  );
   const strongestChannel = useMemo(() => [...currentData].sort((a, b) => b.value - a.value)[0], [currentData]);
   const modalChannel = useMemo(() => channels.find((c) => c.key === modalChannelKey) ?? channels[0], [modalChannelKey]);
-  const dataTotal = useMemo(() => sumValues(currentData), [currentData]);
 
   const highlightChannelLabel = useMemo(() => {
     const label = modalChannel.label;
     return channelLabelToDataKey[label] ?? label;
   }, [modalChannel]);
 
+  /** Percentual do canal aberto no mix do segmento (igual ao rótulo da barra e à soma 100%). */
   const channelPortion = useMemo(() => {
     const row = currentData.find((d) => d.channel === highlightChannelLabel);
-    if (!row || dataTotal <= 0) return 0;
-    return (row.value / dataTotal) * 100;
-  }, [currentData, dataTotal, highlightChannelLabel]);
+    return row?.value ?? 0;
+  }, [currentData, highlightChannelLabel]);
 
   function openChannelInsight(key: string) {
     setModalChannelKey(key);
@@ -632,27 +665,30 @@ export default function HomePage() {
               {
                 logo: "/logos/avantpay.png",
                 alt: "AvantPay",
-                title: "AvantPay",
                 text: "Plataforma de cobrança preventiva e gestão de recebíveis para agir antes do vencimento e reduzir inadimplência.",
               },
               {
                 logo: "/logos/acordo-seguro.png",
                 alt: "Acordo Seguro",
-                title: "Acordo Seguro",
                 text: "Solução 100% digital para negociação online com autonomia, rapidez e experiência moderna.",
               },
               {
                 logo: "/logos/grejo.png",
                 alt: "Grejo Advogados",
-                title: "Grejo Advogados",
                 text: "Suporte jurídico empresarial especializado para reforçar segurança e robustez da operação.",
               },
             ].map((item) => (
-              <article className="productCard reveal" key={item.title}>
+              <article className="productCard reveal" key={item.logo}>
                 <div className="productLogoWrap">
-                  <Image src={item.logo} alt={item.alt} width={240} height={80} className="productLogo" sizes="(max-width: 900px) 50vw, 200px" />
+                  <Image
+                    src={item.logo}
+                    alt={item.alt}
+                    width={360}
+                    height={120}
+                    className="productLogo"
+                    sizes="(max-width: 900px) 70vw, 280px"
+                  />
                 </div>
-                <h3>{item.title}</h3>
                 <p>{item.text}</p>
               </article>
             ))}
@@ -718,7 +754,7 @@ export default function HomePage() {
               <p className="eyebrow alt">Cobertura nacional</p>
               <h3>Presença operacional por estado</h3>
               <p className="mapCard__intro">
-                Mapa do Brasil interativo: passe o cursor sobre cada estado para ver a taxa ilustrativa de recuperação. Clique em uma UF na barra ou no mapa para destacar. Os percentuais são exemplos para leitura estratégica.
+                Mapa do Brasil interativo: passe o cursor sobre cada estado para ver uma taxa ilustrativa de recuperação. Os percentuais são exemplos para leitura estratégica.
               </p>
               <BrazilMapInteractive />
             </article>
@@ -878,7 +914,7 @@ export default function HomePage() {
                 </div>
               </div>
               <p className="modalContent__lead">
-                Análise de desempenho e leitura por segmento. Indicadores ilustrativos — ajuste o ramo para comparar o peso dos meios na carteira.
+                Os percentuais por canal somam 100% em cada ramo e correspondem ao mesmo critério do gráfico e do anel. Indicadores ilustrativos para leitura comparativa.
               </p>
             </div>
             <div className="modalContent__body">
@@ -900,17 +936,25 @@ export default function HomePage() {
 
               <div className="modalDashStack">
                 <div className="modalDashKpis">
-                  <KpiCard label="Segmento ativo" value={selectedSegment} sub="Comparativo por ramo" />
-                  <KpiCard label="Canal em análise" value={modalChannel.label} sub="Peso relativo no mix" />
-                  <KpiCard label="Destaque no segmento" value={strongestChannel.channel} sub={`${strongestChannel.value}% referência`} />
+                  <KpiCard label="Segmento ativo" value={selectedSegment} sub="Base do comparativo (soma 100%)" />
+                  <KpiCard
+                    label="Canal em análise"
+                    value={modalChannel.label}
+                    sub={`${formatMixPercent(channelPortion)} do mix neste ramo`}
+                  />
+                  <KpiCard
+                    label="Maior peso no ramo"
+                    value={strongestChannel.channel}
+                    sub={`${formatMixPercent(strongestChannel.value)} do mix`}
+                  />
                 </div>
 
                 <div className="modalRingPanel">
                   <ShareRing portion={channelPortion} />
                   <div className="modalRingPanel__text">
-                    <strong>Participação estimada neste segmento</strong>
+                    <strong>Participação do canal no segmento</strong>
                     <p className="modalRingPanel__sub">
-                      O canal analisado representa cerca de {channelPortion.toFixed(1)}% do mix de eficiência relativa (dados ilustrativos).
+                      O mesmo valor de <strong>{formatMixPercent(channelPortion)}</strong> exibido na barra deste canal: fatia do mix entre meios neste ramo (total 100%).
                     </p>
                   </div>
                 </div>
