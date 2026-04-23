@@ -866,6 +866,15 @@ img {
   mix-blend-mode: normal;
 }
 
+/* Tema claro: a fotografia de fundo precisa de mais presença (opacidade baixa + véu denso some com a imagem). */
+:root[data-theme="light"] .structurePillarsBand--methodology .structurePillarsBand__parallax {
+  opacity: 0.42;
+}
+
+:root[data-theme="light"] .structurePillarsBand--methodology .structurePillarsBand__veil {
+  background: linear-gradient(180deg, rgba(3, 8, 20, 0.78) 0%, rgba(2, 6, 16, 0.85) 100%);
+}
+
 /* Mantém o véu escuro no tema claro também (bloco de metadologia) */
 .structurePillarsBand--methodology .methodologyKicker {
   text-align: center;
