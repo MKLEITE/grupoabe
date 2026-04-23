@@ -10,10 +10,60 @@ type Loc = { id: string; name: string; path: string };
 
 type MapData = { viewBox: string; locations: Loc[] };
 
-function recoveryPercentForUf(uf: string): number {
+const NORDESTE = new Set(["MA", "PI", "CE", "RN", "PB", "PE", "AL", "SE", "BA"]);
+
+function hashStr(s: string): number {
   let n = 0;
-  for (let i = 0; i < uf.length; i++) n += uf.charCodeAt(i);
-  return 14 + (n % 22);
+  for (let i = 0; i < s.length; i++) n = (n * 33 + s.charCodeAt(i)) | 0;
+  return Math.abs(n);
+}
+
+function clamp(n: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, n));
+}
+
+/** Variação estável por UF. */
+function spread(uf: string, min: number, max: number): number {
+  if (max <= min) return min;
+  return min + (hashStr(uf) % (max - min + 1));
+}
+
+type SudesteSul = { spPeak: number; rsVal: number; scVal: number; rjVal: number };
+
+function buildSulSudeste(): SudesteSul {
+  const spPeak = 90 + Math.floor(Math.random() * 2);
+  const rsVal = clamp(spPeak - 4 - Math.floor(Math.random() * 3), 80, 88);
+  const scVal = clamp(Math.min(spPeak - 5 - Math.floor(Math.random() * 3), rsVal - 1), 78, 87);
+  const rjVal = clamp(spPeak - 2 - Math.floor(Math.random() * 3), 82, 90);
+  return { spPeak, rsVal, scVal, rjVal };
+}
+
+/**
+ * Indicador ilustrativo alinhado a dinâmica comercial: SP no topo; MG/PR/vizinhos fortes;
+ * AC e estados muito periféricos com faixa baixa; Nordeste com capitals e interior diferenciados.
+ */
+function percentForUf(ufRaw: string, s: SudesteSul): number {
+  const u = ufRaw.toUpperCase();
+  const sp = s.spPeak;
+
+  if (u === "SP") return sp;
+  if (u === "RJ") return s.rjVal;
+  if (u === "RS") return s.rsVal;
+  if (u === "SC") return s.scVal;
+  if (u === "MG") return clamp(sp - 1 - spread(ufRaw, 0, 2), 84, 92);
+  if (u === "PR") return clamp(sp - 3 - spread(ufRaw, 0, 2), 80, 89);
+  if (u === "ES") return spread(ufRaw, 70, 79);
+  if (u === "DF") return spread(ufRaw, 74, 83);
+  if (u === "GO") return spread(ufRaw, 70, 80);
+  if (u === "MS" || u === "MT") return spread(ufRaw, 64, 76);
+  if (u === "BA" || u === "PE" || u === "CE") return spread(ufRaw, 55, 68);
+  if (NORDESTE.has(u)) return spread(ufRaw, 50, 64);
+  if (u === "AC") return spread(ufRaw, 28, 36);
+  if (u === "RR" || u === "AP") return spread(ufRaw, 32, 44);
+  if (u === "RO" || u === "TO") return spread(ufRaw, 45, 56);
+  if (u === "AM") return spread(ufRaw, 52, 63);
+  if (u === "PA") return spread(ufRaw, 50, 62);
+  return spread(ufRaw, 48, 60);
 }
 
 export function BrazilMapInteractive() {
@@ -22,17 +72,18 @@ export function BrazilMapInteractive() {
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [tip, setTip] = useState<{ x: number; y: number; id: string } | null>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const recoveryMap = useMemo(() => {
+    const s = buildSulSudeste();
     const m: Record<string, number> = {};
     for (const loc of data.locations) {
-      m[loc.id.toUpperCase()] = recoveryPercentForUf(loc.id);
+      m[loc.id.toUpperCase()] = percentForUf(loc.id, s);
     }
     return m;
   }, [data.locations]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const moveTip = useCallback((e: React.MouseEvent, id: string) => {
     setTip({ x: e.clientX, y: e.clientY, id });
@@ -40,7 +91,7 @@ export function BrazilMapInteractive() {
 
   const tipUf = tip ? tip.id.toUpperCase() : null;
   const tipName = tip ? data.locations.find((l) => l.id === tip.id)?.name : null;
-  const tipPct = tipUf ? recoveryMap[tipUf] ?? 0 : 0;
+  const tipPct = tipUf ? (recoveryMap[tipUf] ?? 0) : 0;
 
   return (
     <div className="brazilMapWrap">
@@ -55,7 +106,7 @@ export function BrazilMapInteractive() {
           {data.locations.map((loc) => {
             const uf = loc.id.toUpperCase();
             const hi = hoverId === loc.id ? "brazilMap__path--hover" : "";
-            const aria = `${loc.name}, recuperação ilustrativa ${recoveryMap[uf]} por cento.`;
+            const aria = `${loc.name}, taxa ilustrativa ${recoveryMap[uf]} por cento.`;
             return (
               <path
                 key={loc.id}
@@ -91,7 +142,7 @@ export function BrazilMapInteractive() {
               <span className="brazilMapTooltip__uf">{tipUf}</span>
               <span className="brazilMapTooltip__name">{tipName}</span>
               <span className="brazilMapTooltip__kpi">Recuperação {tipPct}%</span>
-              <span className="brazilMapTooltip__hint">Indicador ilustrativo</span>
+              <span className="brazilMapTooltip__hint">Indicador ilustrativo (dinâmica regional)</span>
             </div>,
             document.body
           )

@@ -52,6 +52,17 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Ancoras: título fica abaixo do header fixo (evita títulos “cortados”) */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+@media (min-width: 900px) {
+  section[id] {
+    scroll-margin-top: 6.25rem;
+  }
+}
+
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -685,11 +696,49 @@ img {
 
 .structureFigure {
   border-radius: 24px;
-  overflow: hidden;
+  overflow: visible;
   border: none;
   background: transparent;
   min-height: 280px;
   box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Coluna da direita: diagrama (texto à esquerda); limites reajustados (+35% sobre a ronda anterior) */
+.structureFigure--hero {
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  max-height: min(88vh, 729px);
+  padding: 0;
+}
+
+.structurePair--textFirst .structureFigure--hero {
+  justify-content: center;
+}
+
+@media (max-width: 719px) {
+  .structureFigure--hero {
+    max-height: min(92vh, 875px);
+  }
+
+  .structureFigure--hero .structureFigure__img {
+    max-height: min(88vh, 766px);
+  }
+}
+
+.structureFigure--hero .structureFigure__img {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 0;
+  max-height: min(80vh, 656px);
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  margin: 0 auto;
 }
 
 .structureFigure__img {
@@ -735,9 +784,530 @@ img {
 
 @media (min-width: 720px) {
   .structurePair--textFirst {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
     align-items: center;
+    gap: 28px 32px;
   }
+}
+
+/* Faixa dos pilares (Operação, Dados, …): imagem de fundo com parallax */
+.structurePillarsBand {
+  position: relative;
+  margin-top: clamp(28px, 4vw, 52px);
+  padding: clamp(40px, 5.5vw, 76px) 0;
+  overflow: hidden;
+  isolation: isolate;
+  /* Garante altura mínima para o layer absoluto (evita colapso) */
+  min-height: 220px;
+}
+
+/* Mais alto que a faixa: ao mexer com translate, não aparecem “bordas vazias” */
+.structurePillarsBand__parallax {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -28%;
+  height: 156%;
+  z-index: 0;
+  overflow: hidden;
+  will-change: transform;
+  pointer-events: none;
+  backface-visibility: hidden;
+}
+
+.structurePillarsBand__parallaxImg {
+  object-fit: cover;
+  object-position: center;
+  transform: translateZ(0);
+}
+
+/* Véu leve: deixa a fotografia visível; antes cobria tudo com tom da página (efeito “só azul”) */
+.structurePillarsBand__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(244, 247, 251, 0.5) 100%);
+  pointer-events: none;
+  mix-blend-mode: normal;
+}
+
+:root[data-theme="dark"] .structurePillarsBand__veil {
+  background: linear-gradient(
+    180deg,
+    rgba(5, 10, 17, 0.38) 0%,
+    rgba(7, 18, 32, 0.52) 100%
+  );
+}
+
+.structurePillarsBand__inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* Metodologia (infográfico): faixa escura, hub central, trilha azul / dourada */
+.structurePillarsBand--methodology {
+  min-height: clamp(420px, 52vh, 800px);
+  --mp-blue: #38bdf8;
+  --mp-blue-glow: rgba(56, 189, 248, 0.45);
+  --mp-amber: #fbbf24;
+  --mp-amber-glow: rgba(251, 191, 36, 0.42);
+  --mp-ink: rgba(248, 250, 252, 0.96);
+  --mp-mute: rgba(226, 232, 240, 0.82);
+  /* Estilo da referência: sempre “dark premium”, independente do tema global */
+  color: var(--mp-ink);
+}
+
+.structurePillarsBand--methodology .structurePillarsBand__parallax {
+  opacity: 0.18;
+}
+
+.structurePillarsBand--methodology .structurePillarsBand__veil {
+  background: linear-gradient(180deg, rgba(3, 8, 20, 0.94) 0%, rgba(2, 6, 16, 0.97) 100%);
+  mix-blend-mode: normal;
+}
+
+/* Mantém o véu escuro no tema claro também (bloco de metadologia) */
+.structurePillarsBand--methodology .methodologyKicker {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--mp-ink) 58%, var(--mp-mute));
+  margin: 0 0 clamp(20px, 3vw, 32px);
+}
+
+.methodologyLayout {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4vw, 40px);
+}
+
+.methodologyGrid {
+  display: grid;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  grid-template-columns: minmax(0, 1fr) min(200px, 22vw) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "op hub dados"
+    "jur hub rela";
+  align-items: stretch;
+  gap: clamp(12px, 1.4vw, 20px) clamp(10px, 1.2vw, 20px);
+  overflow: visible;
+}
+
+.methodologyGrid__hub {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  min-width: 0;
+}
+
+/* Hub estilo instrumento: tons frios, varredura discreta, sem “arco-íris” */
+.methodologyHub {
+  --hub-slate: rgba(148, 163, 184, 0.22);
+  --hub-cyan: rgba(56, 189, 248, 0.14);
+  position: relative;
+  width: min(240px, 100%);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mp-ink);
+  filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.35));
+}
+
+.methodologyHub__glowHalo {
+  position: absolute;
+  inset: -6%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, #1e3a5f 25%, transparent) 0%, transparent 70%);
+  filter: blur(16px);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.methodologyHub__staticDisk {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: 1;
+  background: radial-gradient(circle at 48% 42%, #0f1b2e 0%, #070d16 52%, #03060b 100%);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border: 1px solid color-mix(in srgb, var(--hub-slate) 60%, transparent);
+  pointer-events: none;
+}
+
+.methodologyHub__rotor {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: 2;
+  animation: methodologyHubRadarSpin 26s linear infinite;
+  will-change: transform;
+}
+
+/* Feixe estreito e suave (leitura “radar”, sem saturar) */
+.methodologyHub__sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg 340deg,
+    color-mix(in srgb, var(--hub-cyan) 100%, transparent) 352deg 360deg
+  );
+  mix-blend-mode: screen;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.methodologyHub__dashedRing {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, #94a3b8 45%, #38bdf8 15%);
+  box-sizing: border-box;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.methodologyHub__center {
+  position: relative;
+  z-index: 3;
+  width: 32%;
+  min-width: 72px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 35%, #0b1522 0%, #050a10 100%);
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.65), 0 0 0 1px color-mix(in srgb, #64748b 35%, transparent);
+  pointer-events: none;
+}
+
+.methodologyHub__dots {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.methodologyHub__dotsRow {
+  display: flex;
+  gap: 6px;
+}
+
+.methodologyHub__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, #e2e8f0 75%, #64748b 25%);
+  opacity: 0.85;
+}
+
+@keyframes methodologyHubRadarSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .methodologyHub__rotor {
+    animation: none;
+  }
+}
+
+/* Cartões: texto | ícone | imagem — imagem em “bleed” até à borda direita e altura do card (cantos = overflow do card) */
+.methodologyPillar {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: clamp(10px, 1.2vw, 16px);
+  border-radius: 24px;
+  overflow: hidden;
+  padding: 0;
+  min-height: clamp(120px, 14vw, 180px);
+  background: linear-gradient(145deg, rgba(6, 16, 34, 0.85) 0%, rgba(2, 8, 18, 0.95) 100%);
+  box-shadow: 0 24px 56px -36px rgba(0, 0, 0, 0.65);
+  align-self: stretch;
+}
+
+.methodologyPillar--blue {
+  border: 1px solid color-mix(in srgb, var(--mp-blue) 32%, rgba(15, 23, 42, 0.6));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mp-blue) 15%, transparent), 0 20px 48px -32px var(--mp-blue-glow);
+}
+
+.methodologyPillar--gold {
+  border: 1px solid color-mix(in srgb, var(--mp-amber) 36%, rgba(15, 23, 42, 0.55));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mp-amber) 12%, transparent), 0 20px 48px -32px var(--mp-amber-glow);
+}
+
+/* Faixa de imagem: encosta ao topo, fundo e borda direita do card (sem raio próprio: recorte pelo parent) */
+.methodologyPillar__media {
+  position: relative;
+  flex: 0 0 min(32%, 220px);
+  width: min(32%, 220px);
+  min-width: 100px;
+  align-self: stretch;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 0;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.methodologyPillar__mediaImg {
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* Fundo se a imagem ainda não existir */
+.methodologyPillar__mediaFallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.methodologyPillar--operacao .methodologyPillar__mediaFallback {
+  background-image: linear-gradient(165deg, #1a3a5c 0%, #0a1626 50%, #132f4a 100%);
+  box-shadow: inset 0 0 40px rgba(56, 189, 248, 0.12);
+}
+
+.methodologyPillar--juridico .methodologyPillar__mediaFallback {
+  background-image: linear-gradient(160deg, #3a2a1a 0%, #1a120a 50%, #2d2218 100%);
+  box-shadow: inset 0 0 36px rgba(120, 90, 50, 0.15);
+}
+
+.methodologyPillar--dados .methodologyPillar__mediaFallback {
+  background-image: linear-gradient(200deg, #0c2744 0%, #031525 50%, #0a3a5a 100%);
+  box-shadow: inset 0 0 32px rgba(56, 189, 248, 0.1);
+}
+
+.methodologyPillar--relacionamento .methodologyPillar__mediaFallback {
+  background-image: linear-gradient(195deg, #4a3520 0%, #1c140a 100%);
+  box-shadow: inset 0 0 40px color-mix(in srgb, var(--mp-amber) 12%, transparent);
+}
+
+.methodologyPillar__emptySlot {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  text-align: center;
+  background: color-mix(in srgb, #030a14 40%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--mp-ink) 16%, var(--mp-blue) 20%);
+  border-radius: 0;
+}
+
+.methodologyPillar--gold .methodologyPillar__emptySlot {
+  border-color: color-mix(in srgb, var(--mp-ink) 12%, var(--mp-amber) 28%);
+}
+
+.methodologyPillar__emptyKicker {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--mp-ink) 50%, var(--mp-mute));
+}
+
+.methodologyPillar__emptyPath {
+  display: block;
+  max-width: 100%;
+  font-size: 0.6rem;
+  line-height: 1.35;
+  word-break: break-all;
+  color: color-mix(in srgb, var(--mp-ink) 70%, var(--mp-mute));
+  background: color-mix(in srgb, #000 35%, transparent);
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.methodologyPillar__copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: left;
+  box-sizing: border-box;
+  align-self: center;
+  padding: clamp(12px, 1.2vw, 18px) 0 clamp(12px, 1.2vw, 18px) clamp(14px, 1.3vw, 20px);
+}
+
+.methodologyPillar__iconRing {
+  width: clamp(58px, 6.8vw, 76px);
+  height: clamp(58px, 6.8vw, 76px);
+  min-width: clamp(58px, 6.8vw, 76px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  align-self: center;
+  border: 1px solid color-mix(in srgb, var(--line) 30%, transparent);
+  background: radial-gradient(circle at 50% 30%, color-mix(in srgb, #0f1c2e 92%, #1e3a5f 8%) 0%, #060d16 100%);
+}
+
+.methodologyPillar--blue .methodologyPillar__iconRing {
+  border-color: color-mix(in srgb, var(--mp-blue) 45%, transparent);
+  box-shadow: 0 0 32px -8px var(--mp-blue-glow), inset 0 1px 0 color-mix(in srgb, var(--mp-blue) 12%, transparent);
+  color: var(--mp-blue);
+}
+
+.methodologyPillar--gold .methodologyPillar__iconRing {
+  border-color: color-mix(in srgb, var(--mp-amber) 42%, transparent);
+  box-shadow: 0 0 32px -8px var(--mp-amber-glow), inset 0 1px 0 color-mix(in srgb, var(--mp-amber) 10%, transparent);
+  color: var(--mp-amber);
+}
+
+.methodologyPillar__iconRing .structureIconSvg {
+  width: clamp(30px, 3.4vw, 40px);
+  height: clamp(30px, 3.4vw, 40px);
+  color: currentColor;
+}
+
+.methodologyPillar__title {
+  margin: 0;
+  font-size: clamp(0.72rem, 1.05vw, 0.82rem);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--mp-ink);
+}
+
+.methodologyPillar__text {
+  margin: 0;
+  font-size: clamp(0.82rem, 1.05vw, 0.92rem);
+  line-height: 1.48;
+  color: var(--mp-mute);
+}
+
+.methodologyTrustBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2.5vw, 28px);
+  padding: clamp(16px, 2vw, 24px) 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--mp-ink) 12%, transparent);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.methodologyTrustBar__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(0.7rem, 0.9vw, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--mp-ink) 75%, var(--mp-mute));
+}
+
+.methodologyTrustBar__iconSvg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  opacity: 0.88;
+  color: color-mix(in srgb, var(--mp-blue) 55%, var(--mp-amber) 45%);
+}
+
+@media (max-width: 900px) {
+  .methodologyGrid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "hub"
+      "op"
+      "dados"
+      "jur"
+      "rela";
+  }
+
+  .methodologyGrid__hub {
+    padding: 12px 0 8px;
+  }
+
+  .methodologyHub {
+    width: min(220px, 64vw);
+    margin: 0 auto;
+  }
+
+  .methodologyPillar,
+  .methodologyPillar--gold {
+    min-height: clamp(96px, 20vw, 160px);
+  }
+
+  .methodologyPillar__media {
+    flex: 0 0 min(28%, 180px);
+    width: min(28%, 180px);
+    min-width: 88px;
+  }
+}
+
+/* Mesma linha; compacta tipografia; imagem continua a “bleed” à direita */
+@media (max-width: 480px) {
+  .methodologyPillar {
+    gap: 6px;
+  }
+
+  .methodologyPillar__copy {
+    padding: 10px 0 10px 12px;
+  }
+
+  .methodologyPillar__title {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+  }
+
+  .methodologyPillar__text {
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+
+  .methodologyPillar__media {
+    flex: 0 0 26%;
+    min-width: 72px;
+  }
+}
+
+.infoCard.infoCard--onBand {
+  background: color-mix(in srgb, var(--panel-strong) 95%, #fff 3%);
+  backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--line) 92%, transparent);
+  box-shadow: 0 20px 56px -32px rgba(15, 23, 42, 0.22);
+}
+
+:root[data-theme="dark"] .infoCard.infoCard--onBand {
+  background: color-mix(in srgb, var(--panel-strong) 94%, transparent);
+  box-shadow: 0 24px 64px -28px rgba(0, 0, 0, 0.5);
 }
 
 .panel,
@@ -775,10 +1345,6 @@ img {
   min-height: 168px;
   display: flex;
   flex-direction: column;
-}
-
-.structurePillars .infoCard p {
-  flex: 1;
 }
 
 .iconBadge {
@@ -907,6 +1473,223 @@ img {
 
 .productGrid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.productGrid--interactive {
+  align-items: stretch;
+}
+
+button.productCard.productCard--ecosystem {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+button.productCard.productCard--ecosystem:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+}
+
+button.productCard.productCard--ecosystem.isSelected {
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand) 22%, transparent);
+}
+
+.productCard__hint {
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--brand);
+  letter-spacing: 0.02em;
+}
+
+.siteSection--dark .productCard__hint {
+  color: var(--brand-2);
+}
+
+.ecosystemPanel {
+  margin-top: 28px;
+  padding: 26px 22px 30px;
+  border-radius: 32px;
+  background: #ffffff;
+  border: 1px solid color-mix(in srgb, var(--line) 90%, var(--brand));
+  box-shadow: var(--shadow);
+  scroll-margin-top: 5.5rem;
+}
+
+@media (min-width: 900px) {
+  .ecosystemPanel {
+    scroll-margin-top: 6.25rem;
+  }
+}
+
+:root[data-theme="dark"] .ecosystemPanel {
+  background: var(--panel-strong);
+  border-color: var(--line);
+}
+
+.ecosystemPanel__head {
+  margin-bottom: 20px;
+}
+
+.ecosystemPanel__title {
+  margin: 0 0 8px;
+  font-size: clamp(1.15rem, 1.4vw, 1.35rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.ecosystemPanel__lede {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 64ch;
+}
+
+/* Imagem de destaque por solução — clique abre o lightbox (`ecossistema-*.png` em public/images/) */
+.ecosystemDashSlot {
+  margin: 0 0 24px;
+  width: 100%;
+}
+
+.ecosystemDashSlot__trigger {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--text) 4%, var(--panel-strong));
+  line-height: 0;
+  aspect-ratio: 1200 / 520;
+  min-height: 240px;
+  max-height: min(440px, 54vh);
+  cursor: zoom-in;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ecosystemDashSlot__trigger:hover {
+  box-shadow: 0 16px 48px -24px color-mix(in srgb, var(--brand) 50%, rgba(0, 0, 0, 0.35));
+  border-color: color-mix(in srgb, var(--brand) 32%, var(--line));
+}
+
+.ecosystemDashSlot__trigger:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+}
+
+.ecosystemDashSlot__img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.modalOverlay--ecosystemDash {
+  z-index: 105;
+  padding: clamp(16px, 3vw, 32px);
+  align-items: center;
+  cursor: pointer;
+}
+
+.ecosystemDashModal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: min(1280px, 100%);
+  margin: 0 auto;
+  cursor: default;
+  pointer-events: auto;
+}
+
+.ecosystemDashModal__title {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: rgba(241, 245, 249, 0.92);
+  letter-spacing: -0.02em;
+  text-align: center;
+  max-width: 56ch;
+}
+
+.ecosystemDashModal__imgWrap {
+  line-height: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.55);
+}
+
+.ecosystemDashModal__img {
+  max-width: min(100%, 98vw) !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: 86dvh;
+  object-fit: contain;
+  display: block;
+  border-radius: 16px;
+}
+
+.ecosystemDashModal__hint {
+  margin: 14px 0 0;
+  font-size: 0.8rem;
+  color: rgba(241, 245, 249, 0.65);
+  user-select: none;
+}
+
+.modalClose--ecosystemDash {
+  position: fixed;
+  right: 16px;
+  top: 16px;
+  z-index: 110;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(15, 23, 42, 0.9);
+  color: #f8fafc;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+.modalClose--ecosystemDash:hover {
+  background: rgba(30, 41, 59, 0.98);
+}
+
+/* Ecossistema: 1ª linha 2 cards; demais linhas em pares; último card em linha inteira se a quantidade for ímpar */
+.ecosystemChannelGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 0;
+  width: 100%;
+}
+
+.ecosystemChannelGrid .channelTile {
+  width: 100%;
+  min-width: 0;
+}
+
+.ecosystemChannelGrid .channelTile:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 640px) {
+  .ecosystemChannelGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ecosystemChannelGrid .channelTile:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
 }
 
 .productCard {
@@ -1899,7 +2682,7 @@ img {
 .diffVault__card {
   position: relative;
   margin: 0;
-  padding: 1.2rem 1.15rem 1.3rem 1.4rem;
+  padding: 1.35rem 1.25rem 1.45rem 1.5rem;
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
@@ -1953,20 +2736,20 @@ img {
   position: relative;
   display: block;
   font-family: ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   color: color-mix(in srgb, var(--muted) 55%, var(--accent));
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.7rem;
 }
 
 .diffVault__text {
   position: relative;
   margin: 0;
-  font-size: clamp(0.92rem, 1.08vw, 1.02rem);
-  line-height: 1.62;
+  font-size: clamp(1.04rem, 1.2vw, 1.16rem);
+  line-height: 1.65;
   font-weight: 500;
   color: var(--text);
   letter-spacing: -0.01em;
@@ -2690,11 +3473,6 @@ img {
     height: auto;
     min-height: min(44vh, 380px);
     aspect-ratio: 16 / 10;
-  }
-
-  .structurePillars {
-    grid-column: 1 / -1;
-    grid-row: auto;
   }
 
   .cardGrid,

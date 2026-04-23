@@ -21,7 +21,7 @@ type StructurePillar = "Operação" | "Dados" | "Jurídico" | "Relacionamento";
 const navItems: NavItem[] = [
   { id: "estrutura", label: "Estrutura" },
   { id: "ecossistema", label: "Ecossistema" },
-  { id: "meios", label: "Meios de Cobrança" },
+  { id: "cobranca-presencial", label: "Cobrança Presencial" },
   { id: "online", label: "ABE Online" },
   { id: "clientes", label: "Clientes" },
   { id: "diferenciais", label: "Diferenciais" },
@@ -32,69 +32,100 @@ const channels: Channel[] = [
   { key: "whatsapp", label: "WhatsApp", icon: "whatsapp", description: "Alto índice de resposta para lembretes, renegociação e conversão rápida." },
   { key: "sms", label: "SMS", icon: "sms", description: "Reforço tático para jornadas de cobrança com ampla capilaridade." },
   { key: "email", label: "E-mail", icon: "email", description: "Formalização, registro de proposta e comunicação documentada." },
-  { key: "chatbot", label: "Chatbot", icon: "chatbot", description: "Escala digital com autoatendimento inteligente e disponibilidade contínua." },
   { key: "ligacao", label: "Ligação", icon: "ligacao", description: "Canal consultivo para objeções, negociação estruturada e alinhamento mais próximo." },
   { key: "presencial", label: "Visita Presencial", icon: "presencial", description: "Grande diferencial para carteiras complexas e negociações de maior impacto." },
-  { key: "internas", label: "Fases Internas", icon: "internas", description: "Fluxos especializados para conduzir a carteira com inteligência e progressão." },
 ];
 
-/**
- * Mix ilustrativo por segmento (soma 100%). Cada canal entre ~10% e 60%: com 7 canais e mínimo 10%,
- * o máximo teórico por canal é 40%; valores até 35–40% nos que têm maior peso.
- */
+/** Mix ilustrativo por segmento (soma 100%). Sem Chatbot nem Fases internas no comparativo. */
 const recoveryData: Record<SegmentName, DataPoint[]> = {
   Industrial: [
     { channel: "WhatsApp", value: 40 },
-    { channel: "SMS", value: 10 },
-    { channel: "E-mail", value: 10 },
-    { channel: "Chatbot", value: 10 },
-    { channel: "Ligação", value: 10 },
-    { channel: "Presencial", value: 10 },
-    { channel: "Fases Internas", value: 10 },
+    { channel: "SMS", value: 3 },
+    { channel: "E-mail", value: 3 },
+    { channel: "Ligação", value: 15 },
+    { channel: "Presencial", value: 39 },
   ],
   Varejo: [
-    { channel: "WhatsApp", value: 25 },
-    { channel: "SMS", value: 15 },
-    { channel: "E-mail", value: 15 },
-    { channel: "Chatbot", value: 12 },
-    { channel: "Ligação", value: 11 },
-    { channel: "Presencial", value: 11 },
-    { channel: "Fases Internas", value: 11 },
+    { channel: "WhatsApp", value: 38 },
+    { channel: "SMS", value: 4 },
+    { channel: "E-mail", value: 5 },
+    { channel: "Ligação", value: 18 },
+    { channel: "Presencial", value: 35 },
   ],
   Serviços: [
-    { channel: "WhatsApp", value: 22 },
-    { channel: "SMS", value: 14 },
-    { channel: "E-mail", value: 14 },
-    { channel: "Chatbot", value: 13 },
-    { channel: "Ligação", value: 12 },
-    { channel: "Presencial", value: 15 },
-    { channel: "Fases Internas", value: 10 },
+    { channel: "WhatsApp", value: 32 },
+    { channel: "SMS", value: 5 },
+    { channel: "E-mail", value: 6 },
+    { channel: "Ligação", value: 24 },
+    { channel: "Presencial", value: 33 },
   ],
   Saúde: [
-    { channel: "WhatsApp", value: 20 },
-    { channel: "SMS", value: 15 },
-    { channel: "E-mail", value: 14 },
-    { channel: "Chatbot", value: 13 },
-    { channel: "Ligação", value: 12 },
-    { channel: "Presencial", value: 14 },
-    { channel: "Fases Internas", value: 12 },
+    { channel: "WhatsApp", value: 28 },
+    { channel: "SMS", value: 4 },
+    { channel: "E-mail", value: 7 },
+    { channel: "Ligação", value: 22 },
+    { channel: "Presencial", value: 39 },
   ],
   Distribuição: [
-    { channel: "WhatsApp", value: 30 },
-    { channel: "SMS", value: 14 },
-    { channel: "E-mail", value: 13 },
-    { channel: "Chatbot", value: 12 },
-    { channel: "Ligação", value: 11 },
-    { channel: "Presencial", value: 10 },
-    { channel: "Fases Internas", value: 10 },
+    { channel: "WhatsApp", value: 35 },
+    { channel: "SMS", value: 4 },
+    { channel: "E-mail", value: 4 },
+    { channel: "Ligação", value: 20 },
+    { channel: "Presencial", value: 37 },
   ],
 };
+
+type EcosystemId = "avantpay" | "acordo" | "grejo";
+
+const ecosystemCompanies: {
+  id: EcosystemId;
+  logo: string;
+  alt: string;
+  text: string;
+  channelKeys: Channel["key"][];
+  /** Imagem de destaque no painel; substitua o ficheiro em `public/images/`. */
+  panelImage: { src: string; alt: string };
+}[] = [
+  {
+    id: "avantpay",
+    logo: "/logos/avantpay.png",
+    alt: "AvantPay",
+    text: "Plataforma de cobrança preventiva e gestão de recebíveis para agir antes do vencimento e reduzir inadimplência.",
+    channelKeys: ["whatsapp", "email", "sms"],
+    panelImage: {
+      src: "/images/ecossistema-avantpay-dashboard.png",
+      alt: "Dashboard e meios AvantPay (IA)",
+    },
+  },
+  {
+    id: "acordo",
+    logo: "/logos/acordo-seguro.png",
+    alt: "Acordo Seguro",
+    text: "Solução 100% digital para negociação online com autonomia, rapidez e experiência moderna.",
+    channelKeys: ["email", "sms", "whatsapp"],
+    panelImage: {
+      src: "/images/ecossistema-acordo-seguro.png",
+      alt: "Plataforma e experiência digital Acordo Seguro",
+    },
+  },
+  {
+    id: "grejo",
+    logo: "/logos/grejo.png",
+    alt: "Grejo Advogados",
+    text: "Suporte jurídico empresarial especializado para reforçar segurança e robustez da operação.",
+    channelKeys: ["whatsapp", "sms", "email", "ligacao", "presencial"],
+    panelImage: {
+      src: "/images/ecossistema-grejo.png",
+      alt: "Atuação e integração Grejo Advogados",
+    },
+  },
+];
 
 const stories: Record<SegmentName, string> = {
   Industrial:
     "No segmento industrial, ligação e visita presencial costumam se destacar porque as negociações envolvem valores maiores, múltiplos decisores e mais profundidade consultiva. Os canais digitais seguem acelerando a jornada e reforçando contato.",
   Varejo:
-    "No varejo, velocidade faz diferença. Por isso, WhatsApp e chatbot lideram com mais frequência, enquanto SMS, e-mail e ligação sustentam reforço, formalização e reengajamento.",
+    "No varejo, velocidade faz diferença. Por isso, WhatsApp lidera com frequência, enquanto SMS, e-mail e ligação sustentam reforço, formalização e reengajamento.",
   Serviços:
     "Em serviços, proximidade e personalização tendem a elevar resultado. Ligação e WhatsApp ganham força, enquanto e-mail ajuda a consolidar o acordo com mais clareza.",
   Saúde:
@@ -121,7 +152,7 @@ const differentials = [
 ];
 
 const ABE_PLATFORM_EMBED_DEFAULT =
-  "https://app.powerbi.com/view?r=eyJrIjoiMTNlMjg1YjAtMWNjZi00OTk0LWE1MGItZGQ0YmUwNzMwODlmIiwidCI6ImJiNmFlZmY5LTczYWItNGNmNS1iZDVlLTkyYmM2M2E3NTI2YyJ9";
+  "https://app.powerbi.com/view?r=eyJrIjoiMjE2OGJiNDAtMzU5Ni00YjRlLWE4ZDctMTE1MDhmMGRmMGIwIiwidCI6ImJiNmFlZmY5LTczYWItNGNmNS1iZDVlLTkyYmM2M2E3NTI2YyJ9";
 
 const ABE_PLATFORM_IFRAME_TITLE = "14395 - NEODENTE";
 
@@ -157,21 +188,93 @@ const contractCards = [
   },
 ];
 
+const ESTRUTURA_PILARES_BG = "/images/estrutura-pilares-bg.png";
+
 const structurePillars: { title: StructurePillar; text: string }[] = [
-  { title: "Operação", text: "Condução estratégica da carteira com fases, disciplina e acompanhamento contínuo." },
-  { title: "Dados", text: "Indicadores executivos para leitura de performance e tomada de decisão." },
+  {
+    title: "Operação",
+    text: "Equipes de negociação interna e de campo, com conhecimento aprofundado do seu segmento e da carteira, em toda a jornada de cobrança.",
+  },
+  {
+    title: "Dados",
+    text: "Indicadores executivos reforçados por IA, para leitura clara da operação, do desempenho e de onde investir a próxima decisão.",
+  },
   { title: "Jurídico", text: "Suporte técnico e segurança para casos que exigem maior robustez." },
   { title: "Relacionamento", text: "Atendimento próximo, consultivo e alinhado à realidade do cliente." },
 ];
+
+/** Layout alinhado ao infográfico: esquerda (azul) Operação + Jurídico; eixo; direita (dourado) Dados + Relacionamento. */
+const methodologyPillars: {
+  title: StructurePillar;
+  gridArea: "op" | "jur" | "dados" | "rela";
+  side: "blue" | "gold";
+}[] = [
+  { title: "Operação", gridArea: "op", side: "blue" },
+  { title: "Dados", gridArea: "dados", side: "gold" },
+  { title: "Jurídico", gridArea: "jur", side: "blue" },
+  { title: "Relacionamento", gridArea: "rela", side: "gold" },
+];
+
+const methodologyTrust: { label: string; id: "shield" | "target" | "lock" | "value" }[] = [
+  { id: "shield", label: "Especialistas em cobrança" },
+  { id: "target", label: "Foco em resultados" },
+  { id: "lock", label: "Segurança e compliance" },
+  { id: "value", label: "Parceria que gera valor" },
+];
+
+const structurePillarSlug: Record<StructurePillar, "operacao" | "dados" | "juridico" | "relacionamento"> = {
+  Operação: "operacao",
+  Dados: "dados",
+  Jurídico: "juridico",
+  Relacionamento: "relacionamento",
+};
+
+/** Coloque ficheiros em `public/images/metodologia/` (ex.: pilar-operacao.png). */
+const METODOLOGIA_PHOTO_DIR = "/images/metodologia";
+const metodologiaFoto: Record<StructurePillar, { file: string; alt: string }> = {
+  Operação: { file: "pilar-operacao.png", alt: "Operação e contacto" },
+  Dados: { file: "pilar-dados.png", alt: "Dados e indicadores" },
+  Jurídico: { file: "pilar-juridico.png", alt: "Jurídico" },
+  Relacionamento: { file: "pilar-relacionamento.png", alt: "Relacionamento" },
+};
+
+function MetodologiaPilarImagem({ pillar }: { pillar: StructurePillar }) {
+  const { file, alt } = metodologiaFoto[pillar];
+  const slug = structurePillarSlug[pillar];
+  const src = `${METODOLOGIA_PHOTO_DIR}/${file}`;
+  const [failed, setFailed] = useState(false);
+
+  return (
+    <div className="methodologyPillar__media" data-pillar={slug} data-missing={failed ? "true" : undefined}>
+      <div className="methodologyPillar__mediaFallback" aria-hidden />
+      {!failed ? (
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="methodologyPillar__mediaImg"
+          sizes="(max-width: 900px) 100vw, 26vw"
+          onError={() => setFailed(true)}
+        />
+      ) : null}
+      {failed ? (
+        <div className="methodologyPillar__emptySlot" aria-hidden>
+          <span className="methodologyPillar__emptyKicker">Imagem (opcional)</span>
+          <code className="methodologyPillar__emptyPath">
+            {METODOLOGIA_PHOTO_DIR}/{file}
+          </code>
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 const channelLabelToDataKey: Record<string, string> = {
   WhatsApp: "WhatsApp",
   SMS: "SMS",
   "E-mail": "E-mail",
-  Chatbot: "Chatbot",
   Ligação: "Ligação",
   "Visita Presencial": "Presencial",
-  "Fases Internas": "Fases Internas",
 };
 
 function sumValues(data: DataPoint[]) {
@@ -403,6 +506,71 @@ function PartnerLogoCarousel() {
   );
 }
 
+function MethodologyHubCore() {
+  return (
+    <div className="methodologyHub" role="img" aria-label="Radar da metodologia: varredura animada no eixo integrador">
+      <div className="methodologyHub__glowHalo" aria-hidden />
+      <div className="methodologyHub__staticDisk" aria-hidden />
+      <div className="methodologyHub__rotor" aria-hidden>
+        <div className="methodologyHub__sweep" />
+        <div className="methodologyHub__dashedRing" />
+      </div>
+      <div className="methodologyHub__center" aria-hidden>
+        <div className="methodologyHub__dots">
+          <span className="methodologyHub__dot" />
+          <div className="methodologyHub__dotsRow">
+            <span className="methodologyHub__dot" />
+            <span className="methodologyHub__dot" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MethodologyTrustIcon({ id }: { id: (typeof methodologyTrust)[number]["id"] }) {
+  const c = "methodologyTrustBar__iconSvg";
+  if (id === "shield")
+    return (
+      <svg className={c} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+        <path
+          d="M12 3l8 3v6c0 4.5-3.2 8.2-8 9-4.8-.8-8-4.5-8-9V6l8-3z"
+          strokeLinejoin="round"
+        />
+        <path d="M9 12l2 2 4-5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  if (id === "target")
+    return (
+      <svg className={c} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M2 12h2M20 12h2" strokeLinecap="round" />
+      </svg>
+    );
+  if (id === "lock")
+    return (
+      <svg className={c} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+        <rect x="5" y="11" width="14" height="10" rx="2" />
+        <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+      </svg>
+    );
+  return (
+    <svg className={c} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+      <path
+        d="M9 12l2 2 4-4M8 8l-3 3a4 4 0 0 0 0 5.7L12 22l4.5-4.5a2 2 0 0 0 0-2.8L12 7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15.5 5.5L17 4a4 4 0 0 1 4.5 4.5L20 9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function SectionHeader({ eyebrow, title, description }: { eyebrow?: string; title: string; description: string }) {
   return (
     <div className="sectionHeader reveal">
@@ -445,6 +613,10 @@ function ShareRing({ portion }: { portion: number }) {
   );
 }
 
+function channelByKey(key: string): Channel {
+  return channels.find((c) => c.key === key) ?? channels[0];
+}
+
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState<SegmentName>("Industrial");
@@ -453,6 +625,11 @@ export default function HomePage() {
   const [platformModalOpen, setPlatformModalOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("estrutura");
+  const [ecosystemOpen, setEcosystemOpen] = useState<EcosystemId | null>(null);
+  const [ecosystemImageLightbox, setEcosystemImageLightbox] = useState<{ src: string; alt: string; title: string } | null>(null);
+  const ecosystemPanelRef = useRef<HTMLDivElement | null>(null);
+  const structurePillarsBandRef = useRef<HTMLDivElement | null>(null);
+  const structurePillarsParallaxRef = useRef<HTMLDivElement | null>(null);
 
   const currentData = useMemo(
     () => normalizeMixTo100Percent(recoveryData[selectedSegment]),
@@ -504,7 +681,7 @@ export default function HomePage() {
 
     revealItems.forEach((item) => observer.observe(item));
     return () => observer.disconnect();
-  }, [channelModalOpen, platformModalOpen]);
+  }, [channelModalOpen, platformModalOpen, ecosystemOpen, ecosystemImageLightbox]);
 
   useEffect(() => {
     const sectionElements = navItems
@@ -528,16 +705,61 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (!channelModalOpen && !platformModalOpen) return;
+    if (!channelModalOpen && !platformModalOpen && !ecosystemImageLightbox) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setChannelModalOpen(false);
         setPlatformModalOpen(false);
+        setEcosystemImageLightbox(null);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [channelModalOpen, platformModalOpen]);
+  }, [channelModalOpen, platformModalOpen, ecosystemImageLightbox]);
+
+  useEffect(() => {
+    if (!ecosystemOpen) return;
+    const id = requestAnimationFrame(() => {
+      ecosystemPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [ecosystemOpen]);
+
+  useLayoutEffect(() => {
+    const band = structurePillarsBandRef.current;
+    const layer = structurePillarsParallaxRef.current;
+    if (!band || !layer) return;
+
+    const reduce =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      layer.style.transform = "translate3d(0,0,0) scale(1.16)";
+      return;
+    }
+
+    /** Parallax: fundo desloca em Y em relação ao scroll — factor e limite altos = efeito bem visível. */
+    const tick = () => {
+      const r = band.getBoundingClientRect();
+      const raw = -r.top * 0.32;
+      const y = Math.max(-180, Math.min(180, raw));
+      layer.style.transform = `translate3d(0, ${y}px, 0) scale(1.24)`;
+    };
+
+    let raf = 0;
+    const onScrollOrResize = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(tick);
+    };
+
+    onScrollOrResize();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
 
   return (
     <main id="top">
@@ -627,28 +849,73 @@ export default function HomePage() {
                   Modelo desenhado para integrar operações, dados, jurídico e relacionamento em um fluxo único, com governança e escala para maximizar a recuperação em cada etapa da carteira.
                 </p>
               </div>
-              <div className="structureFigure">
+              <div className="structureFigure structureFigure--hero">
                 <Image
                   src="/images/estrutura-organizacional.png"
                   alt="Estrutura organizacional ABE"
-                  width={800}
-                  height={640}
+                  width={1823}
+                  height={1094}
                   className="structureFigure__img"
-                  sizes="(max-width: 1080px) 100vw, 50vw"
+                  sizes="(max-width: 719px) 100vw, 77vw"
+                  priority
                 />
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className="cardGrid structurePillars">
-              {structurePillars.map(({ title, text }) => (
-                <article className="infoCard reveal" key={title}>
-                  <div className="infoCardIconWrap" aria-hidden>
-                    <StructureIcon title={title} />
+        <div
+          className="structurePillarsBand structurePillarsBand--methodology"
+          ref={structurePillarsBandRef}
+          aria-label="Metodologia: pilares da operação"
+        >
+          <div className="structurePillarsBand__parallax" ref={structurePillarsParallaxRef} aria-hidden>
+            <Image
+              src={ESTRUTURA_PILARES_BG}
+              alt=""
+              fill
+              className="structurePillarsBand__parallaxImg"
+              sizes="100vw"
+              priority
+            />
+          </div>
+          <div className="structurePillarsBand__veil" aria-hidden />
+          <div className="container structurePillarsBand__inner">
+            <p className="methodologyKicker reveal">Metodologia proprietária</p>
+            <div className="methodologyLayout reveal">
+              <div className="methodologyGrid">
+                {methodologyPillars.map((pillar) => {
+                  const text = structurePillars.find((p) => p.title === pillar.title)!.text;
+                  const slug = structurePillarSlug[pillar.title];
+                  return (
+                    <article
+                      key={pillar.title}
+                      className={`methodologyPillar methodologyPillar--${pillar.side} methodologyPillar--${slug}`}
+                      style={{ gridArea: pillar.gridArea }}
+                    >
+                      <div className="methodologyPillar__copy">
+                        <h3 className="methodologyPillar__title">{pillar.title}</h3>
+                        <p className="methodologyPillar__text">{text}</p>
+                      </div>
+                      <div className="methodologyPillar__iconRing" aria-hidden>
+                        <StructureIcon title={pillar.title} />
+                      </div>
+                      <MetodologiaPilarImagem pillar={pillar.title} />
+                    </article>
+                  );
+                })}
+                <div className="methodologyGrid__hub" style={{ gridArea: "hub" }}>
+                  <MethodologyHubCore />
+                </div>
+              </div>
+              <div className="methodologyTrustBar" role="list">
+                {methodologyTrust.map((item) => (
+                  <div key={item.id} className="methodologyTrustBar__item" role="listitem">
+                    <MethodologyTrustIcon id={item.id} />
+                    <span>{item.label}</span>
                   </div>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </article>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -658,76 +925,114 @@ export default function HomePage() {
         <div className="container">
           <SectionHeader
             title="Um ecossistema completo para gestão e recuperação de créditos."
-            description="A ABE atua em conjunto com soluções complementares para ampliar eficiência, previsibilidade e experiência do cliente em toda a jornada de crédito."
+            description="Clique em cada solução para ver os meios de cobrança integrados. Em seguida, abra o painel analítico para comparar o mix por segmento."
           />
-          <div className="productGrid">
-            {[
-              {
-                logo: "/logos/avantpay.png",
-                alt: "AvantPay",
-                text: "Plataforma de cobrança preventiva e gestão de recebíveis para agir antes do vencimento e reduzir inadimplência.",
-              },
-              {
-                logo: "/logos/acordo-seguro.png",
-                alt: "Acordo Seguro",
-                text: "Solução 100% digital para negociação online com autonomia, rapidez e experiência moderna.",
-              },
-              {
-                logo: "/logos/grejo.png",
-                alt: "Grejo Advogados",
-                text: "Suporte jurídico empresarial especializado para reforçar segurança e robustez da operação.",
-              },
-            ].map((item) => (
-              <article className="productCard reveal" key={item.logo}>
-                <div className="productLogoWrap">
-                  <Image
-                    src={item.logo}
-                    alt={item.alt}
-                    width={360}
-                    height={120}
-                    className="productLogo"
-                    sizes="(max-width: 900px) 70vw, 280px"
-                  />
-                </div>
-                <p>{item.text}</p>
-              </article>
-            ))}
+          <div className="productGrid productGrid--interactive">
+            {ecosystemCompanies.map((item) => {
+              const isOpen = ecosystemOpen === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`productCard productCard--ecosystem reveal ${isOpen ? "isSelected" : ""}`}
+                  onClick={() => setEcosystemOpen((prev) => (prev === item.id ? null : item.id))}
+                  aria-pressed={isOpen}
+                >
+                  <div className="productLogoWrap">
+                    <Image
+                      src={item.logo}
+                      alt={item.alt}
+                      width={360}
+                      height={120}
+                      className="productLogo"
+                      sizes="(max-width: 900px) 70vw, 280px"
+                    />
+                  </div>
+                  <p>{item.text}</p>
+                  <span className="productCard__hint">{isOpen ? "Fechar meios" : "Ver meios de cobrança"}</span>
+                </button>
+              );
+            })}
           </div>
+
+          {ecosystemOpen ? (
+            <div ref={ecosystemPanelRef} className="ecosystemPanel reveal isVisible" id="ecosystem-meios">
+              {ecosystemCompanies
+                .filter((c) => c.id === ecosystemOpen)
+                .map((item) => (
+                  <div key={item.id} className="ecosystemPanel__inner">
+                    <div className="ecosystemPanel__head">
+                      <h3 className="ecosystemPanel__title">Meios de cobrança — {item.alt}</h3>
+                      <p className="ecosystemPanel__lede">Selecione um canal para abrir o painel com KPIs, comparativo entre meios e leitura por segmento.</p>
+                    </div>
+
+                    <div className="ecosystemDashSlot">
+                      <button
+                        type="button"
+                        className="ecosystemDashSlot__trigger"
+                        onClick={() =>
+                          setEcosystemImageLightbox({
+                            src: item.panelImage.src,
+                            alt: item.panelImage.alt,
+                            title: item.alt,
+                          })
+                        }
+                        aria-label={`Ampliar imagem — ${item.alt}`}
+                      >
+                        <Image
+                          src={item.panelImage.src}
+                          alt={`${item.panelImage.alt}. Clique para ampliar.`}
+                          fill
+                          className="ecosystemDashSlot__img"
+                          sizes="(max-width: 1200px) 100vw, 1120px"
+                        />
+                      </button>
+                    </div>
+
+                    <div className="ecosystemChannelGrid">
+                      {item.channelKeys.map((key) => {
+                        const ch = channelByKey(key);
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            className="channelTile"
+                            data-ch={ch.key}
+                            onClick={() => {
+                              setModalChannelKey(ch.key);
+                              setChannelModalOpen(true);
+                            }}
+                          >
+                            <span className="channelTile__iconWrap" aria-hidden>
+                              <ChannelIcon name={ch.icon} />
+                            </span>
+                            <span className="channelTile__body">
+                              <span className="channelTile__title">{ch.label}</span>
+                              <span className="channelTile__desc">{ch.description}</span>
+                            </span>
+                            <span className="channelTile__cta">Abrir painel</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          ) : null}
         </div>
       </section>
 
-      <section id="meios" className="siteSection">
+      <section id="cobranca-presencial" className="siteSection">
         <div className="container">
           <SectionHeader
-            title="Meios de cobrança inteligentes com leitura por canal, segmento e performance."
-            description="Selecione um meio para abrir o painel com KPIs, comparativo entre canais e leitura estratégica por ramo de atividade."
+            title="Cobrança presencial e presença em todo o território."
+            description="Estrutura de negociadores, visitas presenciais e leitura ilustrativa por estado no mapa abaixo."
           />
-
-          <div className="channelShowcaseGrid reveal">
-            {channels.map((channel, i) => (
-              <button
-                key={channel.key}
-                type="button"
-                className="channelTile"
-                data-ch={channel.key}
-                onClick={() => openChannelInsight(channel.key)}
-              >
-                  <span className="channelTile__iconWrap" aria-hidden>
-                    <ChannelIcon name={channel.icon} />
-                  </span>
-                  <span className="channelTile__body">
-                    <span className="channelTile__title">{channel.label}</span>
-                    <span className="channelTile__desc">{channel.description}</span>
-                  </span>
-                  <span className="channelTile__cta">Abrir painel</span>
-                </button>
-              ))}
-          </div>
 
           <div className="visitLayout visitLayout--stack">
             <article className="visitCard reveal">
               <div className="visitCard__inner">
-                <p className="heroBadge">Visita presencial</p>
+                <p className="heroBadge">Cobrança presencial</p>
                 <h3>Cobrança presencial como diferencial competitivo real.</h3>
                 <p>
                   A ABE conta com estrutura de cobrança presencial em todo o território nacional, promovendo uma abordagem mais humana, ágil, eficaz e efetiva. Nossos negociadores visitam o inadimplente em seu próprio estabelecimento comercial, fortalecendo a conversão em casos complexos e de maior valor agregado.
@@ -754,7 +1059,7 @@ export default function HomePage() {
               <p className="eyebrow alt">Cobertura nacional</p>
               <h3>Presença operacional por estado</h3>
               <p className="mapCard__intro">
-                Mapa do Brasil interativo: passe o cursor sobre cada estado para ver uma taxa ilustrativa de recuperação. Os percentuais são exemplos para leitura estratégica.
+                Mapa do Brasil interativo: taxa ilustrativa por UF, coerente com concentração comercial (pico em São Paulo, eixo forte em MG/PR e Sul) e faixas mais baixas onde a operação presencial e o volume típicos são menores (ex.: Acre e estados de fronteira com baixa densidade comercial).
               </p>
               <BrazilMapInteractive />
             </article>
@@ -987,6 +1292,35 @@ export default function HomePage() {
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
           />
+        </div>
+      ) : null}
+
+      {ecosystemImageLightbox ? (
+        <div
+          className="modalOverlay modalOverlay--ecosystemDash"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Imagem ampliada — ${ecosystemImageLightbox.title}`}
+          onClick={() => setEcosystemImageLightbox(null)}
+        >
+          <button type="button" className="modalClose modalClose--ecosystemDash" onClick={() => setEcosystemImageLightbox(null)} aria-label="Fechar">
+            ✕
+          </button>
+          <div className="ecosystemDashModal" onClick={(e) => e.stopPropagation()}>
+            <p className="ecosystemDashModal__title">{ecosystemImageLightbox.title}</p>
+            <div className="ecosystemDashModal__imgWrap">
+              <Image
+                src={ecosystemImageLightbox.src}
+                alt={ecosystemImageLightbox.alt}
+                width={1200}
+                height={520}
+                className="ecosystemDashModal__img"
+                sizes="100vw"
+                priority
+              />
+            </div>
+            <p className="ecosystemDashModal__hint">Clique fora ou em ✕ para fechar</p>
+          </div>
         </div>
       ) : null}
     </main>

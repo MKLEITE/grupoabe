@@ -17,6 +17,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+# export local (PDF gerado)
+export/
+
 # ide / os
 .DS_Store
 Thumbs.db
