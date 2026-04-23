@@ -706,12 +706,12 @@ img {
   justify-content: center;
 }
 
-/* Coluna da direita: diagrama (texto à esquerda); limites reajustados (+35% sobre a ronda anterior) */
+/* Coluna da direita: diagrama (texto à esquerda); caps em +40% vs. a linha de base */
 .structureFigure--hero {
   width: 100%;
   max-width: 100%;
   min-height: 0;
-  max-height: min(88vh, 729px);
+  max-height: min(88vh, 1021px);
   padding: 0;
 }
 
@@ -721,11 +721,11 @@ img {
 
 @media (max-width: 719px) {
   .structureFigure--hero {
-    max-height: min(92vh, 875px);
+    max-height: min(92vh, 1225px);
   }
 
   .structureFigure--hero .structureFigure__img {
-    max-height: min(88vh, 766px);
+    max-height: min(88vh, 1072px);
   }
 }
 
@@ -734,7 +734,7 @@ img {
   max-width: 100% !important;
   height: auto !important;
   min-height: 0;
-  max-height: min(80vh, 656px);
+  max-height: min(80vh, 919px);
   object-fit: contain;
   object-position: center;
   display: block;
