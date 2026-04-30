@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import type { PointerEvent as ReactPointerEvent } from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { StructureIcon } from "@/components/StructureIcons";
 import { BrazilMapInteractive } from "@/components/BrazilMapInteractive";
 import { ChannelIcon } from "@/components/ChannelIcons";
+import { ImageComparisonSlider } from "@/components/ImageComparisonSlider";
 
 type SegmentName = "Industrial" | "Varejo" | "Serviços" | "Saúde" | "Distribuição";
 
@@ -16,10 +16,8 @@ type NavItem = { id: string; label: string };
 
 type Channel = { key: string; label: string; description: string; icon: string };
 
-type StructurePillar = "Operação" | "Dados" | "Jurídico" | "Relacionamento";
-
 const navItems: NavItem[] = [
-  { id: "estrutura", label: "Estrutura" },
+  { id: "home", label: "Home" },
   { id: "ecossistema", label: "Ecossistema" },
   { id: "cobranca-presencial", label: "Cobrança Presencial" },
   { id: "online", label: "ABE Online" },
@@ -77,14 +75,34 @@ const recoveryData: Record<SegmentName, DataPoint[]> = {
 
 type EcosystemId = "avantpay" | "acordo" | "grejo";
 
+/** Grejo abre modal com antes/depois lateral (call center × negociadores sênior). */
+type EcosystemPanelCompare = {
+  left: { src: string; alt: string };
+  right: { src: string; alt: string };
+  leftLabel: string;
+  rightLabel: string;
+};
+
+type EcosystemImageLightboxState =
+  | { kind: "single"; title: string; src: string; alt: string }
+  | {
+      kind: "compare";
+      title: string;
+      left: { src: string; alt: string };
+      right: { src: string; alt: string };
+      leftLabel: string;
+      rightLabel: string;
+    };
+
 const ecosystemCompanies: {
   id: EcosystemId;
   logo: string;
   alt: string;
   text: string;
   channelKeys: Channel["key"][];
-  /** Imagem de destaque no painel; substitua o ficheiro em `public/images/`. */
+  /** Imagem no painel; `panelCompare` exige dois ficheiros (veja também `public/images/grejo-*.png`). */
   panelImage: { src: string; alt: string };
+  panelCompare?: EcosystemPanelCompare;
 }[] = [
   {
     id: "avantpay",
@@ -115,8 +133,20 @@ const ecosystemCompanies: {
     text: "Suporte jurídico empresarial especializado para reforçar segurança e robustez da operação.",
     channelKeys: ["whatsapp", "sms", "email", "ligacao", "presencial"],
     panelImage: {
-      src: "/images/ecossistema-grejo.png",
-      alt: "Atuação e integração Grejo Advogados",
+      src: "/images/grejo-negociadores-senior.png",
+      alt: "Negociadores sênior e atuação comercial com apoio Grejo Advogados",
+    },
+    panelCompare: {
+      left: {
+        src: "/images/grejo-operacao-call-center.png",
+        alt: "Operação em call center: acionamento e relacionamento com devedores",
+      },
+      right: {
+        src: "/images/grejo-negociadores-senior.png",
+        alt: "Negociadores sênior: proximidade, técnica e presença comercial",
+      },
+      leftLabel: "Call center",
+      rightLabel: "Negociadores sênior",
     },
   },
 ];
@@ -136,6 +166,12 @@ const stories: Record<SegmentName, string> = {
 
 /** Quantidade de logos em `public/images/clientes/cliente-01.png` … `cliente-NN.png` (dois dígitos). */
 const CLIENT_LOGO_COUNT: number = 24;
+
+/** Masthead «Cobrança presencial» — faixa Brasil (território nacional). */
+const PRESENCIAL_MASTHEAD_IMAGE = "/images/bandeira-brasil.png";
+
+/** Foto negociador (`public/images/`): card inferior. */
+const PRESENCIAL_NEGOTIATOR_IMAGE = "/images/negociador-presencial1.png";
 
 const differentials = [
   "Tradição e eficiência na recuperação de créditos desde 1979",
@@ -187,87 +223,6 @@ const contractCards = [
     ],
   },
 ];
-
-const ESTRUTURA_PILARES_BG = "/images/estrutura-pilares-bg.png";
-
-const structurePillars: { title: StructurePillar; text: string }[] = [
-  {
-    title: "Operação",
-    text: "Equipes de negociação interna e de campo, com conhecimento aprofundado do seu segmento e da carteira, em toda a jornada de cobrança.",
-  },
-  {
-    title: "Dados",
-    text: "Indicadores executivos reforçados por IA, para leitura clara da operação, do desempenho e de onde investir a próxima decisão.",
-  },
-  { title: "Jurídico", text: "Suporte técnico e segurança para casos que exigem maior robustez." },
-  { title: "Relacionamento", text: "Atendimento próximo, consultivo e alinhado à realidade do cliente." },
-];
-
-/** Layout alinhado ao infográfico: esquerda (azul) Operação + Jurídico; eixo; direita (dourado) Dados + Relacionamento. */
-const methodologyPillars: {
-  title: StructurePillar;
-  gridArea: "op" | "jur" | "dados" | "rela";
-  side: "blue" | "gold";
-}[] = [
-  { title: "Operação", gridArea: "op", side: "blue" },
-  { title: "Dados", gridArea: "dados", side: "gold" },
-  { title: "Jurídico", gridArea: "jur", side: "blue" },
-  { title: "Relacionamento", gridArea: "rela", side: "gold" },
-];
-
-const methodologyTrust: { label: string; id: "shield" | "target" | "lock" | "value" }[] = [
-  { id: "shield", label: "Especialistas em cobrança" },
-  { id: "target", label: "Foco em resultados" },
-  { id: "lock", label: "Segurança e compliance" },
-  { id: "value", label: "Parceria que gera valor" },
-];
-
-const structurePillarSlug: Record<StructurePillar, "operacao" | "dados" | "juridico" | "relacionamento"> = {
-  Operação: "operacao",
-  Dados: "dados",
-  Jurídico: "juridico",
-  Relacionamento: "relacionamento",
-};
-
-/** Coloque ficheiros em `public/images/metodologia/` (ex.: pilar-operacao.png). */
-const METODOLOGIA_PHOTO_DIR = "/images/metodologia";
-const metodologiaFoto: Record<StructurePillar, { file: string; alt: string }> = {
-  Operação: { file: "pilar-operacao.png", alt: "Operação e contacto" },
-  Dados: { file: "pilar-dados.png", alt: "Dados e indicadores" },
-  Jurídico: { file: "pilar-juridico.png", alt: "Jurídico" },
-  Relacionamento: { file: "pilar-relacionamento.png", alt: "Relacionamento" },
-};
-
-function MetodologiaPilarImagem({ pillar }: { pillar: StructurePillar }) {
-  const { file, alt } = metodologiaFoto[pillar];
-  const slug = structurePillarSlug[pillar];
-  const src = `${METODOLOGIA_PHOTO_DIR}/${file}`;
-  const [failed, setFailed] = useState(false);
-
-  return (
-    <div className="methodologyPillar__media" data-pillar={slug} data-missing={failed ? "true" : undefined}>
-      <div className="methodologyPillar__mediaFallback" aria-hidden />
-      {!failed ? (
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="methodologyPillar__mediaImg"
-          sizes="(max-width: 900px) 100vw, 26vw"
-          onError={() => setFailed(true)}
-        />
-      ) : null}
-      {failed ? (
-        <div className="methodologyPillar__emptySlot" aria-hidden>
-          <span className="methodologyPillar__emptyKicker">Imagem (opcional)</span>
-          <code className="methodologyPillar__emptyPath">
-            {METODOLOGIA_PHOTO_DIR}/{file}
-          </code>
-        </div>
-      ) : null}
-    </div>
-  );
-}
 
 const channelLabelToDataKey: Record<string, string> = {
   WhatsApp: "WhatsApp",
@@ -323,260 +278,62 @@ function KpiCard({ label, value, sub }: { label: string; value: string; sub: str
   );
 }
 
-const MARQUEE_SPEED_PX = 0.34;
-
-/** Faixa infinita: translateX + rAF (sempre em movimento; arrasto só enquanto o botão está pressionado). */
-function PartnerLogoCarousel() {
+/** Mural: todas as logos visíveis, sem carrossel. */
+function PartnerLogoWall() {
   const count = CLIENT_LOGO_COUNT;
-  const [reduceMotion, setReduceMotion] = useState(false);
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const offsetRef = useRef(0);
-  const halfRef = useRef(0);
-  const draggingRef = useRef(false);
-  const dragRef = useRef({ startX: 0, startOffset: 0, pointerId: -1 });
-  const rafRef = useRef(0);
+  const logos = useMemo(() => Array.from({ length: count }, (_, i) => String(i + 1).padStart(2, "0")), [count]);
 
-  useEffect(() => {
-    setReduceMotion(typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  }, []);
-
-  const measureHalf = useCallback(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    halfRef.current = track.scrollWidth / 2;
-  }, []);
-
-  const wrapOffset = useCallback((x: number) => {
-    const half = halfRef.current;
-    if (half <= 0) return x;
-    let o = x;
-    while (o <= -half) o += half;
-    while (o > 0) o -= half;
-    return o;
-  }, []);
-
-  const applyTransform = useCallback(() => {
-    const el = trackRef.current;
-    if (el) el.style.transform = `translate3d(${offsetRef.current}px,0,0)`;
-  }, []);
-
-  useLayoutEffect(() => {
-    if (reduceMotion || count < 2) return;
-    measureHalf();
-    const track = trackRef.current;
-    if (!track) return;
-    const ro = new ResizeObserver(measureHalf);
-    ro.observe(track);
-    return () => ro.disconnect();
-  }, [count, reduceMotion, measureHalf]);
-
-  useEffect(() => {
-    if (reduceMotion || count < 2) return;
-    const tick = () => {
-      const half = halfRef.current;
-      if (half > 0 && !draggingRef.current) {
-        offsetRef.current -= MARQUEE_SPEED_PX;
-        offsetRef.current = wrapOffset(offsetRef.current);
-      }
-      applyTransform();
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [reduceMotion, count, wrapOffset, applyTransform]);
-
-  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-    const vp = viewportRef.current;
-    if (!vp) return;
-    draggingRef.current = true;
-    dragRef.current = {
-      startX: e.clientX,
-      startOffset: offsetRef.current,
-      pointerId: e.pointerId,
-    };
-    try {
-      vp.setPointerCapture(e.pointerId);
-    } catch {
-      /* ignore */
-    }
-    vp.style.cursor = "grabbing";
-  };
-
-  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (!draggingRef.current || e.pointerId !== dragRef.current.pointerId) return;
-    const dx = e.clientX - dragRef.current.startX;
-    offsetRef.current = wrapOffset(dragRef.current.startOffset + dx);
-    applyTransform();
-  };
-
-  const endDrag = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (!draggingRef.current || e.pointerId !== dragRef.current.pointerId) return;
-    draggingRef.current = false;
-    const vp = viewportRef.current;
-    try {
-      vp?.releasePointerCapture(e.pointerId);
-    } catch {
-      /* ignore */
-    }
-    if (vp) vp.style.cursor = "";
-  };
+  if (count <= 0) return null;
 
   if (count === 1) {
     return (
-      <div className="partnerMarquee partnerMarquee--single" role="region" aria-label="Logo de cliente">
-        <div className="partnerMarquee__cell partnerMarquee__cell--solo">
-          <Image
-            src="/images/clientes/cliente-01.png"
-            alt="Logo cliente"
-            fill
-            className="partnerMarquee__img"
-            sizes="min(360px, 90vw)"
-            priority
-            draggable={false}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if (reduceMotion) {
-    return (
-      <div className="partnerMarquee partnerMarquee--static" role="region" aria-label="Logos de clientes">
-        <div className="partnerMarquee__staticGrid">
-          {Array.from({ length: count }, (_, i) => {
-            const num = String(i + 1).padStart(2, "0");
-            return (
-              <div key={num} className="partnerMarquee__cell">
-                <Image
-                  src={`/images/clientes/cliente-${num}.png`}
-                  alt={`Logo cliente ${num}`}
-                  fill
-                  className="partnerMarquee__img"
-                  sizes="(max-width: 560px) 40vw, 200px"
-                  priority={i === 0}
-                  draggable={false}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="partnerMarquee">
-      <div
-        ref={viewportRef}
-        className="partnerMarquee__viewport"
-        role="region"
-        tabIndex={0}
-        aria-label="Faixa de logos em movimento contínuo. Pode arrastar horizontalmente; ao soltar, o movimento continua."
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-      >
-        <div className="partnerMarquee__fade partnerMarquee__fade--left" aria-hidden />
-        <div className="partnerMarquee__fade partnerMarquee__fade--right" aria-hidden />
-        <div ref={trackRef} className="partnerMarquee__track partnerMarquee__track--loop">
-          {(["a", "b"] as const).flatMap((prefix) =>
-            Array.from({ length: count }, (_, i) => {
-              const num = String(i + 1).padStart(2, "0");
-              return (
-                <div key={`${prefix}-${num}`} className="partnerMarquee__cell">
-                  <Image
-                    src={`/images/clientes/cliente-${num}.png`}
-                    alt={`Logo cliente ${num}`}
-                    fill
-                    className="partnerMarquee__img"
-                    sizes="(max-width: 560px) 44vw, 280px"
-                    priority={prefix === "a" && i === 0}
-                    draggable={false}
-                  />
-                </div>
-              );
-            })
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MethodologyHubCore() {
-  return (
-    <div className="methodologyHub" role="img" aria-label="Radar da metodologia: varredura animada no eixo integrador">
-      <div className="methodologyHub__glowHalo" aria-hidden />
-      <div className="methodologyHub__staticDisk" aria-hidden />
-      <div className="methodologyHub__rotor" aria-hidden>
-        <div className="methodologyHub__sweep" />
-        <div className="methodologyHub__dashedRing" />
-      </div>
-      <div className="methodologyHub__center" aria-hidden>
-        <div className="methodologyHub__dots">
-          <span className="methodologyHub__dot" />
-          <div className="methodologyHub__dotsRow">
-            <span className="methodologyHub__dot" />
-            <span className="methodologyHub__dot" />
+      <div className="partnerWall partnerWall--solo">
+        <figure className="partnerWall__solo">
+          <div className="partnerWall__card partnerWall__card--prominent">
+            <Image
+              src="/images/clientes/cliente-01.png"
+              alt="Logo de cliente"
+              fill
+              className="partnerWall__img"
+              sizes="min(620px, 92vw)"
+              priority
+              draggable={false}
+            />
           </div>
-        </div>
+        </figure>
       </div>
+    );
+  }
+
+  return (
+    <div className="partnerWall" role="region" aria-label="Marcas e clientes ABE — todas as logos">
+      <ul className="partnerWall__grid" role="list">
+        {logos.map((num) => (
+          <li key={num} className="partnerWall__item" role="listitem">
+            <div className="partnerWall__card">
+              <Image
+                src={`/images/clientes/cliente-${num}.png`}
+                alt={`Logo cliente ${num}`}
+                fill
+                className="partnerWall__img"
+                sizes="(max-width: 480px) 52vw, (max-width: 900px) 30vw, 240px"
+                priority={num === "01"}
+                draggable={false}
+              />
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-function MethodologyTrustIcon({ id }: { id: (typeof methodologyTrust)[number]["id"] }) {
-  const c = "methodologyTrustBar__iconSvg";
-  if (id === "shield")
-    return (
-      <svg className={c} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-        <path
-          d="M12 3l8 3v6c0 4.5-3.2 8.2-8 9-4.8-.8-8-4.5-8-9V6l8-3z"
-          strokeLinejoin="round"
-        />
-        <path d="M9 12l2 2 4-5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    );
-  if (id === "target")
-    return (
-      <svg className={c} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-        <circle cx="12" cy="12" r="9" />
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2M12 20v2M2 12h2M20 12h2" strokeLinecap="round" />
-      </svg>
-    );
-  if (id === "lock")
-    return (
-      <svg className={c} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-        <rect x="5" y="11" width="14" height="10" rx="2" />
-        <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-      </svg>
-    );
-  return (
-    <svg className={c} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-      <path
-        d="M9 12l2 2 4-4M8 8l-3 3a4 4 0 0 0 0 5.7L12 22l4.5-4.5a2 2 0 0 0 0-2.8L12 7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M15.5 5.5L17 4a4 4 0 0 1 4.5 4.5L20 9"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function SectionHeader({ eyebrow, title, description }: { eyebrow?: string; title: string; description: string }) {
+function SectionHeader({ eyebrow, title, description }: { eyebrow?: string; title: string; description: ReactNode }) {
   return (
     <div className="sectionHeader reveal">
       {eyebrow ? <div className="eyebrow">{eyebrow}</div> : null}
       <h2>{title}</h2>
-      <p>{description}</p>
+      <div className="sectionHeader__desc">{typeof description === "string" ? <p>{description}</p> : description}</div>
     </div>
   );
 }
@@ -620,16 +377,15 @@ function channelByKey(key: string): Channel {
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState<SegmentName>("Industrial");
+  const [structureModalOpen, setStructureModalOpen] = useState(false);
   const [channelModalOpen, setChannelModalOpen] = useState(false);
   const [modalChannelKey, setModalChannelKey] = useState("whatsapp");
   const [platformModalOpen, setPlatformModalOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [activeSection, setActiveSection] = useState("estrutura");
+  const [activeSection, setActiveSection] = useState("home");
   const [ecosystemOpen, setEcosystemOpen] = useState<EcosystemId | null>(null);
-  const [ecosystemImageLightbox, setEcosystemImageLightbox] = useState<{ src: string; alt: string; title: string } | null>(null);
+  const [ecosystemImageLightbox, setEcosystemImageLightbox] = useState<EcosystemImageLightboxState | null>(null);
   const ecosystemPanelRef = useRef<HTMLDivElement | null>(null);
-  const structurePillarsBandRef = useRef<HTMLDivElement | null>(null);
-  const structurePillarsParallaxRef = useRef<HTMLDivElement | null>(null);
 
   const currentData = useMemo(
     () => normalizeMixTo100Percent(recoveryData[selectedSegment]),
@@ -705,9 +461,10 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (!channelModalOpen && !platformModalOpen && !ecosystemImageLightbox) return;
+    if (!structureModalOpen && !channelModalOpen && !platformModalOpen && !ecosystemImageLightbox) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        setStructureModalOpen(false);
         setChannelModalOpen(false);
         setPlatformModalOpen(false);
         setEcosystemImageLightbox(null);
@@ -715,7 +472,7 @@ export default function HomePage() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [channelModalOpen, platformModalOpen, ecosystemImageLightbox]);
+  }, [structureModalOpen, channelModalOpen, platformModalOpen, ecosystemImageLightbox]);
 
   useEffect(() => {
     if (!ecosystemOpen) return;
@@ -724,42 +481,6 @@ export default function HomePage() {
     });
     return () => cancelAnimationFrame(id);
   }, [ecosystemOpen]);
-
-  useLayoutEffect(() => {
-    const band = structurePillarsBandRef.current;
-    const layer = structurePillarsParallaxRef.current;
-    if (!band || !layer) return;
-
-    const reduce =
-      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      layer.style.transform = "translate3d(0,0,0) scale(1.16)";
-      return;
-    }
-
-    /** Parallax: fundo desloca em Y em relação ao scroll — factor e limite altos = efeito bem visível. */
-    const tick = () => {
-      const r = band.getBoundingClientRect();
-      const raw = -r.top * 0.32;
-      const y = Math.max(-180, Math.min(180, raw));
-      layer.style.transform = `translate3d(0, ${y}px, 0) scale(1.24)`;
-    };
-
-    let raf = 0;
-    const onScrollOrResize = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(tick);
-    };
-
-    onScrollOrResize();
-    window.addEventListener("scroll", onScrollOrResize, { passive: true });
-    window.addEventListener("resize", onScrollOrResize, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScrollOrResize);
-      window.removeEventListener("resize", onScrollOrResize);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
 
   return (
     <main id="top">
@@ -793,7 +514,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <section className="heroSection">
+      <section id="home" className="heroSection">
         <div className="container heroLayout">
           <div className="heroTop reveal">
             <div className="heroCopy">
@@ -806,9 +527,9 @@ export default function HomePage() {
                 <a href="#ecossistema" className="buttonPrimary">
                   Explorar o ecossistema
                 </a>
-                <a href="#contratos" className="buttonSecondary">
-                  Ver modelos contratuais
-                </a>
+                <button type="button" className="buttonSecondary" onClick={() => setStructureModalOpen(true)}>
+                  Estrutura Organizacional
+                </button>
               </div>
             </div>
 
@@ -829,94 +550,6 @@ export default function HomePage() {
             <KpiCard label="Atuação" value="100% nacional" sub="Cobertura com estrutura presencial" />
             <KpiCard label="Foco" value="B2B" sub="Estratégia orientada a empresas" />
             <KpiCard label="Modelo" value="Multicanal" sub="Tecnologia + jurídico + negociação" />
-          </div>
-        </div>
-      </section>
-
-      <section id="estrutura" className="siteSection">
-        <div className="container">
-          <SectionHeader
-            title="Estrutura organizacional orientada à recuperação, governança e escala."
-            description="Uma operação desenhada para unir tecnologia, inteligência comercial, negociação amigável e jurídico estratégico em um fluxo integrado, com foco na máxima eficiência da carteira."
-          />
-
-          <div className="structureLayout">
-            <div className="structurePair structurePair--textFirst reveal">
-              <div className="structureIntro">
-                <h3 className="structureIntro__title">Estrutura organizacional</h3>
-                <p className="structureIntro__line">Metodologia proprietária</p>
-                <p className="structureIntro__copy">
-                  Modelo desenhado para integrar operações, dados, jurídico e relacionamento em um fluxo único, com governança e escala para maximizar a recuperação em cada etapa da carteira.
-                </p>
-              </div>
-              <div className="structureFigure structureFigure--hero">
-                <Image
-                  src="/images/estrutura-organizacional.png"
-                  alt="Estrutura organizacional ABE"
-                  width={1823}
-                  height={1094}
-                  className="structureFigure__img"
-                  sizes="(max-width: 719px) 100vw, 77vw"
-                  priority
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="structurePillarsBand structurePillarsBand--methodology"
-          ref={structurePillarsBandRef}
-          aria-label="Metodologia: pilares da operação"
-        >
-          <div className="structurePillarsBand__parallax" ref={structurePillarsParallaxRef} aria-hidden>
-            <Image
-              src={ESTRUTURA_PILARES_BG}
-              alt=""
-              fill
-              className="structurePillarsBand__parallaxImg"
-              sizes="100vw"
-              priority
-            />
-          </div>
-          <div className="structurePillarsBand__veil" aria-hidden />
-          <div className="container structurePillarsBand__inner">
-            <p className="methodologyKicker reveal">Metodologia proprietária</p>
-            <div className="methodologyLayout reveal">
-              <div className="methodologyGrid">
-                {methodologyPillars.map((pillar) => {
-                  const text = structurePillars.find((p) => p.title === pillar.title)!.text;
-                  const slug = structurePillarSlug[pillar.title];
-                  return (
-                    <article
-                      key={pillar.title}
-                      className={`methodologyPillar methodologyPillar--${pillar.side} methodologyPillar--${slug}`}
-                      style={{ gridArea: pillar.gridArea }}
-                    >
-                      <div className="methodologyPillar__copy">
-                        <h3 className="methodologyPillar__title">{pillar.title}</h3>
-                        <p className="methodologyPillar__text">{text}</p>
-                      </div>
-                      <div className="methodologyPillar__iconRing" aria-hidden>
-                        <StructureIcon title={pillar.title} />
-                      </div>
-                      <MetodologiaPilarImagem pillar={pillar.title} />
-                    </article>
-                  );
-                })}
-                <div className="methodologyGrid__hub" style={{ gridArea: "hub" }}>
-                  <MethodologyHubCore />
-                </div>
-              </div>
-              <div className="methodologyTrustBar" role="list">
-                {methodologyTrust.map((item) => (
-                  <div key={item.id} className="methodologyTrustBar__item" role="listitem">
-                    <MethodologyTrustIcon id={item.id} />
-                    <span>{item.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -970,13 +603,26 @@ export default function HomePage() {
                       <button
                         type="button"
                         className="ecosystemDashSlot__trigger"
-                        onClick={() =>
+                        onClick={() => {
+                          const compare = item.panelCompare;
+                          if (compare) {
+                            setEcosystemImageLightbox({
+                              kind: "compare",
+                              title: item.alt,
+                              left: compare.left,
+                              right: compare.right,
+                              leftLabel: compare.leftLabel,
+                              rightLabel: compare.rightLabel,
+                            });
+                            return;
+                          }
                           setEcosystemImageLightbox({
+                            kind: "single",
+                            title: item.alt,
                             src: item.panelImage.src,
                             alt: item.panelImage.alt,
-                            title: item.alt,
-                          })
-                        }
+                          });
+                        }}
                         aria-label={`Ampliar imagem — ${item.alt}`}
                       >
                         <Image
@@ -1022,25 +668,55 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="cobranca-presencial" className="siteSection">
+      <section id="cobranca-presencial" className="siteSection siteSection--presencialImpact">
         <div className="container">
-          <SectionHeader
-            title="Cobrança presencial e presença em todo o território."
-            description="Estrutura de negociadores, visitas presenciais e leitura ilustrativa por estado no mapa abaixo."
-          />
+          <div className="presencialImpact__masthead reveal">
+            <div className="presencialImpact__mastheadGrid">
+              <div className="presencialImpact__mastheadCopy">
+                <p className="presencialImpact__chip">Proximidade e execução no território</p>
+                <SectionHeader
+                  title="Cobrança presencial em todo o território nacional"
+                  description={
+                    <>
+                      <p className="sectionHeader__leadAccent">
+                        A ABE é a única empresa de recuperação de créditos com estrutura de cobrança presencial em todo o território nacional.
+                      </p>
+                      <p>O mapa abaixo sintetiza, ilustrativamente, a leitura por UF.</p>
+                    </>
+                  }
+                />
+              </div>
+              <div className="presencialImpact__mastheadPhoto">
+                <Image
+                  src={PRESENCIAL_MASTHEAD_IMAGE}
+                  alt="Território nacional — bandeira do Brasil"
+                  fill
+                  className="presencialImpact__mastheadImg"
+                  sizes="(max-width: 899px) 100vw, min(460px, 40vw)"
+                  priority={false}
+                />
+              </div>
+            </div>
+          </div>
 
           <div className="visitLayout visitLayout--stack">
-            <article className="visitCard reveal">
+            <article className="mapCard reveal" aria-label="Mapa interativo por estado">
+              <p className="mapCard__kicker">Leitura ilustrativa por UF — passe o cursor sobre os estados</p>
+              <BrazilMapInteractive />
+            </article>
+
+            <article className="visitCard visitCard--presence reveal">
               <div className="visitCard__inner">
-                <p className="heroBadge">Cobrança presencial</p>
-                <h3>Cobrança presencial como diferencial competitivo real.</h3>
-                <p>
-                  A ABE conta com estrutura de cobrança presencial em todo o território nacional, promovendo uma abordagem mais humana, ágil, eficaz e efetiva. Nossos negociadores visitam o inadimplente em seu próprio estabelecimento comercial, fortalecendo a conversão em casos complexos e de maior valor agregado.
+                <p className="visitCard__kicker">Equipe Presencial!</p>
+                <h3 className="visitCard__subtitle">Presença comercial onde o caso pede resultado</h3>
+                <p className="visitCard__lead">
+                  Abrangência nacional combinada com abordagem humana e técnica. Os negociadores visitam o estabelecimento do inadimplente quando isso aumenta produtividade e conversão — especialmente em operações maiores ou mais delicadas.
                 </p>
-                <ul className="featureList">
+                <div className="visitCard__divider" aria-hidden />
+                <ul className="featureList featureList--presence">
                   <li>Atuação em 100% do território nacional</li>
-                  <li>Negociadores com formação específica e abordagem técnica</li>
-                  <li>Uma das maiores fontes de recuperação da operação</li>
+                  <li>Formação técnica e discurso alinhados à carteira</li>
+                  <li>Uma das principais frentes de recuperação na operação</li>
                 </ul>
               </div>
               <div className="visitCard__photo">
@@ -1053,15 +729,6 @@ export default function HomePage() {
                   priority={false}
                 />
               </div>
-            </article>
-
-            <article className="mapCard reveal">
-              <p className="eyebrow alt">Cobertura nacional</p>
-              <h3>Presença operacional por estado</h3>
-              <p className="mapCard__intro">
-                Mapa do Brasil interativo: taxa ilustrativa por UF, coerente com concentração comercial (pico em São Paulo, eixo forte em MG/PR e Sul) e faixas mais baixas onde a operação presencial e o volume típicos são menores (ex.: Acre e estados de fronteira com baixa densidade comercial).
-              </p>
-              <BrazilMapInteractive />
             </article>
           </div>
         </div>
@@ -1121,7 +788,7 @@ export default function HomePage() {
             description="Marcas de referência que reforçam credibilidade e escala."
           />
           <div className="partnerShowcase reveal">
-            <PartnerLogoCarousel />
+            <PartnerLogoWall />
           </div>
         </div>
       </section>
@@ -1199,6 +866,42 @@ export default function HomePage() {
           </nav>
         </div>
       </footer>
+
+      {structureModalOpen ? (
+        <div
+          className="modalOverlay modalOverlay--structure"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="structure-modal-title"
+          onClick={() => setStructureModalOpen(false)}
+        >
+          <div className="modalContent modalContent--structure reveal isVisible" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="modalClose" onClick={() => setStructureModalOpen(false)} aria-label="Fechar">
+              ✕
+            </button>
+            <div className="modalContent__intro">
+              <h3 className="modalStructure__title" id="structure-modal-title">
+                Estrutura organizacional
+              </h3>
+              <p className="modalStructure__subtitle">Metodologia proprietária</p>
+              <p className="modalContent__lead">
+                Tradição e eficiência na recuperação de créditos <strong>desde 1979</strong>, com operação, dados, jurídico e relacionamento
+                integrados em um fluxo único.
+              </p>
+            </div>
+            <div className="modalStructure__imageWrap">
+              <Image
+                src="/images/estrutura-organizacional.png"
+                alt="Estrutura organizacional ABE"
+                fill
+                className="modalStructure__image"
+                sizes="(max-width: 1500px) calc(100vw - 32px), 1400px"
+                priority
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {channelModalOpen ? (
         <div className="modalOverlay modalOverlay--channel" role="dialog" aria-modal="true" aria-labelledby="channel-modal-title">
@@ -1300,26 +1003,51 @@ export default function HomePage() {
           className="modalOverlay modalOverlay--ecosystemDash"
           role="dialog"
           aria-modal="true"
-          aria-label={`Imagem ampliada — ${ecosystemImageLightbox.title}`}
+          aria-label={
+            ecosystemImageLightbox.kind === "compare"
+              ? `Comparativo — ${ecosystemImageLightbox.title}`
+              : `Imagem ampliada — ${ecosystemImageLightbox.title}`
+          }
           onClick={() => setEcosystemImageLightbox(null)}
         >
           <button type="button" className="modalClose modalClose--ecosystemDash" onClick={() => setEcosystemImageLightbox(null)} aria-label="Fechar">
             ✕
           </button>
-          <div className="ecosystemDashModal" onClick={(e) => e.stopPropagation()}>
+          <div
+            className={`ecosystemDashModal ${ecosystemImageLightbox.kind === "compare" ? "ecosystemDashModal--compare" : ""}`}
+            onClick={(event) => event.stopPropagation()}
+          >
             <p className="ecosystemDashModal__title">{ecosystemImageLightbox.title}</p>
-            <div className="ecosystemDashModal__imgWrap">
-              <Image
-                src={ecosystemImageLightbox.src}
-                alt={ecosystemImageLightbox.alt}
-                width={1200}
-                height={520}
-                className="ecosystemDashModal__img"
-                sizes="100vw"
-                priority
-              />
-            </div>
-            <p className="ecosystemDashModal__hint">Clique fora ou em ✕ para fechar</p>
+            {ecosystemImageLightbox.kind === "compare" ? (
+              <>
+                <div className="ecosystemDashModalBody--compare">
+                  <ImageComparisonSlider
+                    leftImage={ecosystemImageLightbox.left}
+                    rightImage={ecosystemImageLightbox.right}
+                    leftCaption={ecosystemImageLightbox.leftLabel}
+                    rightCaption={ecosystemImageLightbox.rightLabel}
+                  />
+                </div>
+                <p className="ecosystemDashModal__hint">
+                  Arraste horizontalmente sobre a imagem ou use ← → para comparar. Clique fora ou em ✕ para fechar.
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="ecosystemDashModal__imgWrap">
+                  <Image
+                    src={ecosystemImageLightbox.src}
+                    alt={ecosystemImageLightbox.alt}
+                    width={1200}
+                    height={520}
+                    className="ecosystemDashModal__img"
+                    sizes="100vw"
+                    priority
+                  />
+                </div>
+                <p className="ecosystemDashModal__hint">Clique fora ou em ✕ para fechar</p>
+              </>
+            )}
           </div>
         </div>
       ) : null}

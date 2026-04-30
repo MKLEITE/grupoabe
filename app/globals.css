@@ -388,6 +388,22 @@ img {
   color: var(--text);
 }
 
+.sectionHeader__desc {
+  margin-top: 14px;
+  max-width: min(74ch, 100%);
+}
+
+.sectionHeader__leadAccent {
+  margin: 0 0 0.62em !important;
+  padding: 0;
+  font-weight: 800;
+  font-size: clamp(1.06rem, 1.62vw, 1.22rem);
+  line-height: 1.48;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.sectionHeader .sectionHeader__desc p:not(.sectionHeader__leadAccent),
 .sectionHeader p,
 .infoCard p,
 .spotlightCard p,
@@ -574,6 +590,427 @@ img {
   padding: 24px 0 92px;
 }
 
+#ecossistema .productGrid--interactive {
+  margin-top: clamp(28px, 4.2vw, 56px);
+}
+
+/* Cobrança presencial: barra marca, halo e masthead com foto integrada */
+.siteSection.siteSection--presencialImpact {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  padding-top: clamp(40px, 6vw, 72px);
+  padding-bottom: clamp(80px, 10vw, 112px);
+}
+
+.siteSection.siteSection--presencialImpact::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 5px;
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent) 95%, transparent) 0%,
+    var(--accent-2) 22%,
+    var(--brand) 52%,
+    color-mix(in srgb, var(--brand-2) 88%, var(--accent)) 100%
+  );
+}
+
+.siteSection.siteSection--presencialImpact::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 92% 48% at 10% -2%, color-mix(in srgb, var(--brand) 34%, transparent) 0%, transparent 50%),
+    radial-gradient(ellipse 62% 48% at 100% 8%, color-mix(in srgb, var(--accent) 42%, transparent) 0%, transparent 46%),
+    linear-gradient(
+      177deg,
+      color-mix(in srgb, var(--brand) 12%, var(--bg)) 0%,
+      var(--bg-soft) 48%,
+      color-mix(in srgb, var(--bg-soft) 78%, var(--bg)) 100%
+    );
+}
+
+:root[data-theme="dark"] .siteSection.siteSection--presencialImpact::after {
+  background:
+    radial-gradient(ellipse 92% 50% at 10% -2%, color-mix(in srgb, var(--brand) 52%, transparent) 0%, transparent 52%),
+    radial-gradient(ellipse 62% 50% at 100% 4%, color-mix(in srgb, var(--accent) 44%, transparent) 0%, transparent 48%),
+    linear-gradient(178deg, color-mix(in srgb, var(--brand) 16%, var(--bg)) 0%, var(--bg-soft) 45%, var(--bg) 100%);
+}
+
+.presencialImpact__masthead {
+  margin-bottom: clamp(32px, 4.8vw, 52px);
+  padding: 0;
+  overflow: hidden;
+  border-radius: clamp(26px, 3vw, 30px);
+  border: 1px solid color-mix(in srgb, var(--line) 58%, var(--brand));
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--panel-strong) 82%, var(--brand)),
+    color-mix(in srgb, var(--panel-strong) 93%, transparent) 72%
+  );
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #ffffff 82%, transparent) inset,
+    0 0 0 1px color-mix(in srgb, var(--brand) 20%, transparent),
+    0 28px 70px -32px color-mix(in srgb, var(--brand) 42%, transparent),
+    0 14px 48px -36px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+:root[data-theme="dark"] .presencialImpact__masthead {
+  background: linear-gradient(
+    152deg,
+    color-mix(in srgb, var(--panel-strong) 58%, var(--bg)),
+    color-mix(in srgb, #0f172a 32%, transparent) 100%
+  );
+  border-color: color-mix(in srgb, var(--line) 48%, var(--brand));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #fff 12%, transparent) inset,
+    0 0 0 1px color-mix(in srgb, var(--brand) 32%, transparent),
+    0 36px 80px -32px rgba(0, 0, 0, 0.45),
+    0 22px 56px -40px color-mix(in srgb, var(--brand) 38%, transparent);
+}
+
+.presencialImpact__mastheadGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.presencialImpact__mastheadCopy {
+  padding: clamp(22px, 3.1vw, 36px);
+  min-width: 0;
+}
+
+.presencialImpact__mastheadPhoto {
+  position: relative;
+  width: 100%;
+  /* bandeira-brasil.png (~760×306) — o cartão assume esta proporção na faixa visual */
+  aspect-ratio: 760 / 306;
+  /* transparente: o gradiente do .presencialImpact__masthead aparece onde a máscara some (evita faixa branca) */
+  background: transparent;
+}
+
+@media (min-width: 900px) {
+  .presencialImpact__mastheadGrid {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.88fr);
+    align-items: stretch;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .presencialImpact__mastheadPhoto {
+    align-self: stretch;
+    border-left: none;
+    padding: 0;
+    box-sizing: border-box;
+    min-height: 0;
+    /* proporção bandeira — preenche com cover se a linha ficar mais alta pelo texto */
+  }
+
+  .presencialImpact__mastheadCopy {
+    padding: clamp(10px, 1.35vw, 16px) clamp(12px, 1.6vw, 20px);
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--line) 70%, transparent) transparent;
+  }
+
+  .presencialImpact__mastheadCopy::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .presencialImpact__mastheadCopy::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--line) 70%, transparent);
+  }
+
+  .presencialImpact__mastheadCopy::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .siteSection.siteSection--presencialImpact .presencialImpact__mastheadPhoto .presencialImpact__mastheadImg {
+    object-fit: cover;
+    object-position: center;
+    /* mistura à esquerda com o mesmo fundo que o texto (via cartão pai; coluna foto sem tinta própria) */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.06) 5%,
+      rgba(0, 0, 0, 0.22) 12%,
+      rgba(0, 0, 0, 0.58) 24%,
+      rgba(0, 0, 0, 0.9) 38%,
+      #000 52%,
+      #000 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.06) 5%,
+      rgba(0, 0, 0, 0.22) 12%,
+      rgba(0, 0, 0, 0.58) 24%,
+      rgba(0, 0, 0, 0.9) 38%,
+      #000 52%,
+      #000 100%
+    );
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+  }
+}
+
+.presencialImpact__chip {
+  margin: 0;
+  margin-bottom: 5px;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 52%, var(--line));
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--accent-2) 28%, var(--panel-strong)),
+    color-mix(in srgb, var(--accent) 14%, var(--panel-strong))
+  );
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--accent-2) 55%, var(--text));
+}
+
+.presencialImpact__masthead .sectionHeader h2 {
+  margin-top: 5px;
+  margin-bottom: 0;
+  font-size: clamp(1.08rem, 2.35vw, 1.52rem);
+  line-height: 1.13;
+}
+
+.presencialImpact__masthead .sectionHeader__desc {
+  margin-top: clamp(6px, 1vw, 9px);
+  max-width: 100%;
+}
+
+.presencialImpact__masthead .sectionHeader__leadAccent {
+  font-size: clamp(0.92rem, 1.42vw, 1.06rem);
+  line-height: 1.42;
+  margin-bottom: 0.45em !important;
+}
+
+.presencialImpact__masthead .sectionHeader .sectionHeader__desc p:not(.sectionHeader__leadAccent) {
+  font-size: 0.88rem;
+  line-height: 1.42;
+}
+
+.siteSection.siteSection--presencialImpact .visitLayout.visitLayout--stack {
+  margin-top: 4px;
+}
+
+.siteSection.siteSection--presencialImpact .visitCard {
+  border-color: color-mix(in srgb, var(--brand) 22%, var(--line));
+  box-shadow:
+    0 32px 64px -36px color-mix(in srgb, var(--brand) 44%, transparent),
+    0 0 0 1px color-mix(in srgb, #ffffff 72%, transparent) inset;
+}
+
+:root[data-theme="dark"] .siteSection.siteSection--presencialImpact .visitCard {
+  border-color: color-mix(in srgb, var(--brand) 38%, var(--line));
+  box-shadow:
+    0 48px 80px -40px rgba(0, 0, 0, 0.5),
+    0 0 0 1px color-mix(in srgb, #fff 11%, transparent) inset;
+}
+
+/* Card “Presença comercial …” — hierarquia, checklist e foto fundida ao texto */
+.siteSection.siteSection--presencialImpact .visitCard--presence {
+  position: relative;
+  isolation: isolate;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .siteSection.siteSection--presencialImpact .visitCard--presence {
+    transition:
+      transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.34s ease,
+      border-color 0.24s ease;
+  }
+
+  .siteSection.siteSection--presencialImpact .visitCard--presence:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--brand) 38%, var(--line));
+    box-shadow:
+      0 44px 88px -40px color-mix(in srgb, var(--brand) 52%, transparent),
+      0 0 0 1px color-mix(in srgb, #ffffff 88%, transparent) inset;
+  }
+}
+
+:root[data-theme="dark"] .siteSection.siteSection--presencialImpact .visitCard--presence:hover {
+  box-shadow:
+    0 56px 92px -44px rgba(0, 0, 0, 0.55),
+    0 0 0 1px color-mix(in srgb, #fff 14%, transparent) inset;
+}
+
+.siteSection.siteSection--presencialImpact .visitCard--presence .visitCard__inner {
+  position: relative;
+  padding: clamp(26px, 3.2vw, 34px) clamp(24px, 3vw, 36px);
+  background: radial-gradient(
+    118% 80% at 0% -12%,
+    color-mix(in srgb, var(--brand) 14%, transparent) 0%,
+    transparent 55%
+  );
+}
+
+.siteSection.siteSection--presencialImpact .visitCard--presence .visitCard__kicker {
+  margin: 0 0 8px;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.69rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--brand) 65%, var(--text));
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--brand) 12%, var(--panel-strong)),
+    color-mix(in srgb, var(--panel-strong) 92%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--brand) 28%, var(--line));
+  box-shadow: 0 1px 0 color-mix(in srgb, #fff 52%, transparent) inset;
+}
+
+.siteSection.siteSection--presencialImpact .visitCard--presence .visitCard__subtitle {
+  margin: 0 0 14px;
+  font-size: clamp(1.1rem, 2.1vw, 1.45rem);
+  line-height: 1.22;
+}
+
+.siteSection.siteSection--presencialImpact .visitCard--presence .visitCard__lead {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.66;
+  color: color-mix(in srgb, var(--muted) 92%, var(--text));
+  max-width: 58ch;
+}
+
+.siteSection.siteSection--presencialImpact .visitCard--presence .visitCard__divider {
+  display: block;
+  height: 1px;
+  margin: clamp(18px, 2.8vw, 24px) 0 clamp(14px, 2.2vw, 18px);
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--brand) 52%, transparent) 0%,
+    transparent 94%
+  );
+}
+
+.siteSection.siteSection--presencialImpact .visitCard--presence .featureList.featureList--presence {
+  margin: 0;
+  gap: 14px;
+}
+
+.siteSection.siteSection--presencialImpact .featureList.featureList--presence li {
+  padding-left: 36px;
+  font-size: 0.93rem;
+  line-height: 1.52;
+}
+
+.siteSection.siteSection--presencialImpact .featureList.featureList--presence li::before {
+  content: "✓";
+  top: -1px;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1;
+  color: color-mix(in srgb, var(--accent-2) 40%, #fff);
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--brand) 78%, #0f172a),
+    color-mix(in srgb, var(--brand) 55%, #1e293b)
+  );
+  border: 1px solid color-mix(in srgb, var(--brand) 52%, transparent);
+  box-shadow:
+    0 4px 12px color-mix(in srgb, var(--brand) 28%, transparent),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .siteSection.siteSection--presencialImpact .visitCard--presence {
+    transition: none;
+  }
+
+  .siteSection.siteSection--presencialImpact .visitCard--presence:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 899px) {
+  .siteSection.siteSection--presencialImpact .presencialImpact__mastheadPhoto .presencialImpact__mastheadImg {
+    object-fit: cover;
+    object-position: center;
+    /* empilhado: suaviza topo em direção ao card de texto acima */
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.35) 10%,
+      rgba(0, 0, 0, 0.85) 28%,
+      #000 48%,
+      #000 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.35) 10%,
+      rgba(0, 0, 0, 0.85) 28%,
+      #000 48%,
+      #000 100%
+    );
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+  }
+
+  .presencialImpact__mastheadPhoto {
+    border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+    background: transparent;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}
+
+@media (min-width: 900px) and (prefers-reduced-motion: reduce) {
+  .siteSection.siteSection--presencialImpact .presencialImpact__mastheadPhoto .presencialImpact__mastheadImg {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 16%,
+      rgba(0, 0, 0, 0.65) 36%,
+      #000 55%,
+      #000 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 16%,
+      rgba(0, 0, 0, 0.65) 36%,
+      #000 55%,
+      #000 100%
+    );
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+  }
+}
+
 .siteSection--dark {
   position: relative;
 }
@@ -610,6 +1047,7 @@ img {
   color: var(--accent);
 }
 
+.siteSection--dark .sectionHeader .sectionHeader__desc p:not(.sectionHeader__leadAccent),
 .siteSection--dark .sectionHeader p,
 .siteSection--dark .diffCard p,
 .siteSection--dark .onlinePanel p {
@@ -637,6 +1075,7 @@ img {
   color: var(--text-band);
 }
 
+:root[data-theme="light"] .siteSection--dark .sectionHeader .sectionHeader__desc p:not(.sectionHeader__leadAccent),
 :root[data-theme="light"] .siteSection--dark .sectionHeader p,
 :root[data-theme="light"] .siteSection--dark .productCard p,
 :root[data-theme="light"] .siteSection--dark .onlinePanel p {
@@ -1653,6 +2092,152 @@ button.productCard.productCard--ecosystem.isSelected {
   user-select: none;
 }
 
+.ecosystemDashModal--compare {
+  max-width: min(1320px, 100%);
+  width: 100%;
+}
+
+.ecosystemDashModalBody--compare {
+  width: 100%;
+  max-height: min(92dvh, 1040px);
+  overflow: visible;
+}
+
+/* Comparativo lado a lado (Grejo): barra vertical arrastável */
+.compareSliderOuter {
+  width: 100%;
+}
+
+.compareSliderRibbon {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 0 4px;
+  user-select: none;
+}
+
+.compareSliderRibbon__pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 12px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.compareSliderRibbon__pill--left {
+  color: rgba(248, 250, 252, 0.95);
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.compareSliderRibbon__pill--right {
+  color: rgba(15, 23, 42, 0.95);
+  background: rgba(254, 252, 232, 0.85);
+}
+
+.compareSlider {
+  position: relative;
+  width: 100%;
+  /* Mais alto que antes (painéis Grejo ~860×570 / 1024×843 — modal comparativo usa mais viewport) */
+  aspect-ratio: 1200 / 720;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.55);
+  outline: none;
+  touch-action: none;
+}
+
+.compareSlider:focus-visible {
+  outline: 2px solid rgba(226, 232, 240, 0.95);
+  outline-offset: 3px;
+}
+
+.compareSlider__img {
+  user-select: none;
+  pointer-events: none;
+}
+
+.compareSlider__img--right {
+  object-fit: cover;
+  object-position: center;
+}
+
+.compareSlider__clip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  overflow: hidden;
+  box-shadow: 4px 0 18px -8px rgba(0, 0, 0, 0.35);
+}
+
+.compareSlider__clipInner {
+  position: relative;
+  height: 100%;
+  max-width: none;
+}
+
+.compareSlider__img--left {
+  object-fit: cover;
+  object-position: center;
+}
+
+.compareSlider__rail {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  cursor: ew-resize;
+}
+
+.compareSlider__divider {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  margin-left: -2px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow:
+    -1px 0 12px rgba(0, 0, 0, 0.25),
+    1px 0 12px rgba(0, 0, 0, 0.25);
+}
+
+.compareSlider__handle {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(54px, 11vw);
+  height: min(54px, 11vw);
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  background: rgba(21, 58, 138, 0.92);
+  color: rgba(248, 250, 252, 0.98);
+  display: grid;
+  place-items: center;
+  font-size: 0.92rem;
+  font-weight: 900;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(0, 0, 0, 0.15) inset;
+  pointer-events: none;
+}
+
+.compareSlider__handleGrip {
+  display: inline-block;
+  letter-spacing: 2px;
+  font-size: 0.74rem;
+  line-height: 1;
+}
+
 .modalClose--ecosystemDash {
   position: fixed;
   right: 16px;
@@ -2143,6 +2728,15 @@ button.productCard.productCard--ecosystem.isSelected {
   color: var(--accent);
 }
 
+.visitCard .visitCard__subtitle {
+  margin: 0 0 10px;
+  font-size: clamp(1.06rem, 1.85vw, 1.38rem);
+  font-weight: 800;
+  line-height: 1.26;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
 .mapCard {
   overflow: hidden;
 }
@@ -2155,6 +2749,15 @@ button.productCard.productCard--ecosystem.isSelected {
   backdrop-filter: none;
   padding: 0;
   border-radius: 0;
+}
+
+.mapCard__kicker {
+  margin: 0 0 8px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 .mapCard__intro {
@@ -2186,16 +2789,18 @@ button.productCard.productCard--ecosystem.isSelected {
 
 .brazilMap__path {
   fill: color-mix(in srgb, var(--brand) 16%, var(--panel-strong));
-  stroke: color-mix(in srgb, var(--line) 85%, transparent);
-  stroke-width: 0.45;
+  stroke: color-mix(in srgb, var(--text) 42%, var(--line));
+  stroke-width: 1;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-  transition: fill 0.15s ease, stroke 0.15s ease, opacity 0.15s ease;
+  transition: fill 0.15s ease, stroke 0.15s ease, opacity 0.15s ease, stroke-width 0.15s ease;
   cursor: pointer;
 }
 
 .brazilMap__path--hover {
   fill: color-mix(in srgb, var(--brand) 42%, var(--panel-strong));
-  stroke: color-mix(in srgb, var(--brand) 55%, var(--line));
+  stroke: color-mix(in srgb, var(--brand) 65%, var(--text));
+  stroke-width: 1.35;
 }
 
 .brazilMap__path--dim {
@@ -2205,6 +2810,7 @@ button.productCard.productCard--ecosystem.isSelected {
 .brazilMap__path--selected {
   fill: color-mix(in srgb, var(--brand) 48%, #0f172a);
   stroke: var(--brand);
+  stroke-width: 1.35;
   opacity: 1;
 }
 
@@ -2376,6 +2982,10 @@ button.productCard.productCard--ecosystem.isSelected {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+#online .onlinePanel {
+  margin-top: clamp(28px, 4.2vw, 56px);
+}
+
 .onlinePanel__copy {
   min-width: 0;
 }
@@ -2494,7 +3104,7 @@ button.productCard.productCard--ecosystem.isSelected {
   gap: 14px;
 }
 
-/* Showcase sem “card”: carrossel no fundo da página */
+/* Showcase clientes — mural transparente */
 .partnerShowcase {
   margin-top: clamp(12px, 2vw, 24px);
   padding: 0;
@@ -2504,108 +3114,99 @@ button.productCard.productCard--ecosystem.isSelected {
   box-shadow: none;
 }
 
-/* Faixa infinita: animação CSS translateX(-50%) + fades nas extremidades */
-.partnerMarquee {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding: clamp(8px, 1.5vw, 16px) 0;
-}
-
-.partnerMarquee__viewport {
+.partnerWall {
   position: relative;
   width: 100%;
-  max-width: min(1280px, 100%);
-  margin: 0 auto;
-  overflow: hidden;
-  padding: 6px 0 10px;
-  cursor: grab;
-  touch-action: pan-x;
-  user-select: none;
-  -webkit-user-select: none;
-  outline: none;
+  margin-top: clamp(8px, 1.5vw, 20px);
+  padding: clamp(28px, 4vw, 52px) clamp(8px, 2.5vw, 24px);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
 }
 
-.partnerMarquee__viewport:active {
-  cursor: grabbing;
-}
-
-.partnerMarquee__viewport:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 4px;
-}
-
-.partnerMarquee__fade {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: clamp(40px, 7vw, 80px);
-  z-index: 2;
-  pointer-events: none;
-}
-
-.partnerMarquee__fade--left {
-  left: 0;
-  background: linear-gradient(90deg, var(--bg) 0%, transparent 100%);
-}
-
-.partnerMarquee__fade--right {
-  right: 0;
-  background: linear-gradient(270deg, var(--bg) 0%, transparent 100%);
-}
-
-.partnerMarquee__track {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: clamp(28px, 5vw, 52px);
-  width: max-content;
-  padding: 12px 8px 16px;
-}
-
-.partnerMarquee__track--loop {
-  will-change: transform;
-}
-
-.partnerMarquee__cell {
+.partnerWall__grid {
   position: relative;
-  flex: 0 0 auto;
-  width: clamp(180px, 28vw, 300px);
-  height: clamp(100px, 17vw, 170px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 172px), 1fr));
+  gap: clamp(18px, 3vw, 32px);
 }
 
-.partnerMarquee__img {
+.partnerWall__item {
+  margin: 0;
+}
+
+.partnerWall__card {
+  position: relative;
+  aspect-ratio: 5 / 3;
+  overflow: visible;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding: clamp(10px, 2vw, 18px);
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  box-shadow: none;
+  transition:
+    transform 0.42s cubic-bezier(0.22, 1, 0.32, 1),
+    box-shadow 0.42s cubic-bezier(0.22, 1, 0.32, 1);
+}
+
+.partnerWall__card:hover {
+  transform: translateY(-8px) scale(1.045);
+  box-shadow:
+    0 18px 42px -14px color-mix(in srgb, var(--brand) 42%, transparent),
+    0 0 52px -6px color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+.partnerWall__card:active {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.partnerWall__img {
+  position: relative;
+  z-index: 1;
   object-fit: contain;
   object-position: center;
-  pointer-events: none;
+  filter: grayscale(0.72) saturate(0.45) contrast(1.04) brightness(0.93);
+  transition: filter 0.38s cubic-bezier(0.22, 1, 0.32, 1);
 }
 
-.partnerMarquee--single {
+.partnerWall__card:hover .partnerWall__img {
+  filter:
+    grayscale(0)
+    saturate(1.12)
+    contrast(1.12)
+    brightness(1);
+}
+
+.partnerWall--solo .partnerWall__solo {
+  position: relative;
+  z-index: 1;
+  margin: 0;
   display: flex;
   justify-content: center;
-  padding: 8px 0;
 }
 
-.partnerMarquee__cell--solo {
-  width: min(440px, 100%);
-  aspect-ratio: 5 / 3;
-  min-height: 140px;
-  max-height: 260px;
+.partnerWall--solo .partnerWall__card--prominent {
+  width: min(620px, 100%);
+  aspect-ratio: 16 / 9;
 }
 
-.partnerMarquee--static .partnerMarquee__staticGrid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: clamp(16px, 3vw, 28px);
-  padding: 8px 0;
-}
+@media (prefers-reduced-motion: reduce) {
+  .partnerWall__card,
+  .partnerWall__img {
+    transition: none;
+  }
 
-.partnerMarquee--static .partnerMarquee__cell {
-  width: clamp(170px, 28vw, 280px);
-  height: clamp(96px, 17vw, 160px);
+  .partnerWall__card:hover {
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 .clientGrid {
@@ -3017,6 +3618,12 @@ button.productCard.productCard--ecosystem.isSelected {
   background: rgba(2, 6, 23, 0.92);
 }
 
+.modalOverlay--structure {
+  background: color-mix(in srgb, var(--bg) 22%, rgba(4, 12, 28, 0.86));
+  backdrop-filter: blur(20px) saturate(1.12);
+  padding: clamp(6px, 1vw, 14px);
+}
+
 .modalPlatformIframe {
   width: 100%;
   height: 100%;
@@ -3070,6 +3677,90 @@ button.productCard.productCard--ecosystem.isSelected {
     0 0 0 1px color-mix(in srgb, #fff 6%, transparent) inset,
     0 28px 64px -24px rgba(15, 23, 42, 0.35),
     0 80px 120px -48px color-mix(in srgb, var(--brand) 18%, transparent);
+}
+
+.modalContent--structure {
+  grid-template-columns: 1fr;
+  width: min(1460px, calc(100vw - 16px));
+  min-height: min(90dvh, 920px);
+  max-height: min(98dvh, 1180px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: clamp(6px, 1vw, 12px);
+  padding: clamp(10px, 1.4vw, 18px);
+  position: relative;
+  border-radius: 28px;
+  border: 1px solid color-mix(in srgb, var(--line) 86%, var(--brand));
+  background: color-mix(in srgb, var(--panel-strong) 70%, var(--bg-soft));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #fff 6%, transparent) inset,
+    0 28px 64px -24px rgba(15, 23, 42, 0.35),
+    0 80px 120px -48px color-mix(in srgb, var(--brand) 18%, transparent);
+}
+
+.modalContent--structure .modalContent__intro {
+  position: relative;
+  z-index: 1;
+  max-width: min(860px, 100%);
+  padding: clamp(10px, 1.3vw, 16px) clamp(10px, 1.6vw, 18px) clamp(4px, 0.8vw, 8px);
+  padding-right: clamp(54px, 9.4vw, 68px);
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.modalStructure__title {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.6vw, 1.8rem);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.modalStructure__subtitle {
+  margin: 8px 0 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.modalContent--structure .modalContent__lead {
+  margin: 8px 0 0;
+  font-size: clamp(0.92rem, 1.35vw, 1.02rem);
+  line-height: 1.56;
+  color: var(--muted);
+}
+
+.modalContent--structure .modalContent__lead strong {
+  color: var(--accent-2);
+}
+
+.modalStructure__imageWrap {
+  position: relative;
+  z-index: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.modalStructure__image {
+  object-fit: contain !important;
+  object-position: center;
+}
+
+.modalContent--structure .modalClose {
+  z-index: 3;
+  right: clamp(12px, 1.5vw, 18px);
+  top: clamp(12px, 1.5vw, 18px);
+  background: color-mix(in srgb, var(--panel-strong) 90%, transparent);
 }
 
 .modalContent--channel .modalContent__intro {
