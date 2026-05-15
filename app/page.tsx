@@ -164,8 +164,9 @@ const stories: Record<SegmentName, string> = {
     "Em distribuição, contato direto e velocidade operacional costumam favorecer ligação e visita presencial, especialmente em carteiras mais sensíveis e com maior complexidade comercial.",
 };
 
-/** Quantidade de logos em `public/images/clientes/cliente-01.png` … `cliente-NN.png` (dois dígitos). */
-const CLIENT_LOGO_COUNT: number = 24;
+/** Faixa de logos em `public/images/clientes/cliente-NN.png` … `cliente-49.png` (dois dígitos). */
+const CLIENT_LOGO_START: number = 1;
+const CLIENT_LOGO_COUNT: number = 49;
 
 /** Masthead «Cobrança presencial» — faixa Brasil (território nacional). */
 const PRESENCIAL_MASTHEAD_IMAGE = "/images/bandeira-brasil.png";
@@ -281,7 +282,10 @@ function KpiCard({ label, value, sub }: { label: string; value: string; sub: str
 /** Mural: todas as logos visíveis, sem carrossel. */
 function PartnerLogoWall() {
   const count = CLIENT_LOGO_COUNT;
-  const logos = useMemo(() => Array.from({ length: count }, (_, i) => String(i + 1).padStart(2, "0")), [count]);
+  const logos = useMemo(
+    () => Array.from({ length: count }, (_, i) => String(CLIENT_LOGO_START + i).padStart(2, "0")),
+    [count]
+  );
 
   if (count <= 0) return null;
 
@@ -291,7 +295,7 @@ function PartnerLogoWall() {
         <figure className="partnerWall__solo">
           <div className="partnerWall__card partnerWall__card--prominent">
             <Image
-              src="/images/clientes/cliente-01.png"
+              src={`/images/clientes/cliente-${logos[0]}.png`}
               alt="Logo de cliente"
               fill
               className="partnerWall__img"
@@ -317,7 +321,7 @@ function PartnerLogoWall() {
                 fill
                 className="partnerWall__img"
                 sizes="(max-width: 480px) 52vw, (max-width: 900px) 30vw, 240px"
-                priority={num === "01"}
+                priority={num === logos[0]}
                 draggable={false}
               />
             </div>
