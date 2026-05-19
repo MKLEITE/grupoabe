@@ -1,0 +1,74 @@
+/**
+ * Cursor decorativo global — só ativo com ponteiro fino (CustomCursor.tsx).
+ * Cores alinhadas ao tema em globals.css (--accent-2).
+ */
+
+#custom-cursor {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  pointer-events: none;
+}
+
+#custom-cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  border: 1.5px solid color-mix(in srgb, var(--accent-2) 85%, #888);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  background: color-mix(in srgb, var(--accent-2) 12%, transparent);
+  transition:
+    width 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+  will-change: left, top, width, height;
+}
+
+body.custom-cursor--enabled.custom-cursor--visible #custom-cursor-ring {
+  opacity: 0.72;
+}
+
+body.custom-cursor--enabled.custom-cursor--visible.custom-cursor--hover #custom-cursor-ring {
+  width: 52px;
+  height: 52px;
+  opacity: 1;
+  background: color-mix(in srgb, var(--accent-2) 18%, transparent);
+}
+
+body.custom-cursor--enabled.custom-cursor--press #custom-cursor-ring {
+  width: 28px;
+  height: 28px;
+  opacity: 1;
+}
+
+/* Esconder cursor nativo só quando o modo custom está ativo */
+body.custom-cursor--enabled,
+body.custom-cursor--enabled * {
+  cursor: none !important;
+}
+
+body.custom-cursor--enabled input:not([type="checkbox"]):not([type="radio"]),
+body.custom-cursor--enabled textarea {
+  cursor: text !important;
+}
+
+body.custom-cursor--enabled [contenteditable="true"] {
+  cursor: text !important;
+}
+
+body.custom-cursor--enabled canvas {
+  cursor: crosshair !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #custom-cursor-ring {
+    transition: none;
+  }
+}

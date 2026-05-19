@@ -1,10 +1,10 @@
 :root {
-  /* Fundo quase branco; pouco cinza para não “lavar” a página */
+  /* Fundo quase branco; pouco cinza para nÃ£o â€œlavarâ€ a pÃ¡gina */
   --bg: #fbfcfe;
   --bg-soft: #f4f7fb;
   --panel: rgba(255, 255, 255, 0.96);
   --panel-strong: #ffffff;
-  /* Título / texto principal — alto contraste em fundos claros */
+  /* TÃ­tulo / texto principal â€” alto contraste em fundos claros */
   --text: #030712;
   --muted: #2d3f55;
   --line: rgba(15, 23, 42, 0.1);
@@ -16,7 +16,7 @@
   --accent: #946c24;
   --accent-2: #b8892e;
   --shadow: 0 20px 64px -36px rgba(15, 23, 42, 0.22);
-  /* Superfícies fortes para hero / faixas (modo claro) */
+  /* SuperfÃ­cies fortes para hero / faixas (modo claro) */
   --surface-ink: linear-gradient(165deg, #122c5c 0%, #0a1a3d 100%);
   --surface-ink-text: #f0f5ff;
   --surface-ink-muted: rgba(230, 238, 255, 0.78);
@@ -27,10 +27,10 @@
   --muted-band: var(--muted);
   --bg: #050a11;
   --bg-soft: #0a1420;
-  /* Superfícies um pouco mais claras que o fundo para hierarquia */
+  /* SuperfÃ­cies um pouco mais claras que o fundo para hierarquia */
   --panel: rgba(18, 32, 52, 0.88);
   --panel-strong: #121f33;
-  /* Texto principal mais claro que o fundo (evita “título escuro” em cards) */
+  /* Texto principal mais claro que o fundo (evita â€œtÃ­tulo escuroâ€ em cards) */
   --text: #f5f8ff;
   --muted: #c3cedd;
   --line: rgba(230, 240, 255, 0.14);
@@ -52,7 +52,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Ancoras: título fica abaixo do header fixo (evita títulos “cortados”) */
+/* Ancoras: tÃ­tulo fica abaixo do header fixo (evita tÃ­tulos â€œcortadosâ€) */
 section[id] {
   scroll-margin-top: 5.5rem;
 }
@@ -73,7 +73,7 @@ body {
   color: var(--text);
 }
 
-/* Modo claro: menos “cinza” nos halos; fundo mais limpo */
+/* Modo claro: menos â€œcinzaâ€ nos halos; fundo mais limpo */
 :root[data-theme="light"] body {
   background:
     radial-gradient(circle at 50% -10%, color-mix(in srgb, var(--brand) 7%, transparent) 0%, transparent 42%),
@@ -307,7 +307,7 @@ img {
   gap: 24px;
 }
 
-/* Hero: texto+botões + imagem na mesma altura; KPIs em faixa full-bleed abaixo */
+/* Hero: texto+botÃµes + imagem na mesma altura; KPIs em faixa full-bleed abaixo */
 .heroLayout {
   display: flex;
   flex-direction: column;
@@ -594,7 +594,7 @@ img {
   margin-top: clamp(28px, 4.2vw, 56px);
 }
 
-/* Cobrança presencial: barra marca, halo e masthead com foto integrada */
+/* CobranÃ§a presencial: barra marca, halo e masthead com foto integrada */
 .siteSection.siteSection--presencialImpact {
   position: relative;
   isolation: isolate;
@@ -691,9 +691,9 @@ img {
 .presencialImpact__mastheadPhoto {
   position: relative;
   width: 100%;
-  /* bandeira-brasil.png (~760×306) — o cartão assume esta proporção na faixa visual */
+  /* bandeira-brasil.png (~760Ã—306) â€” o cartÃ£o assume esta proporÃ§Ã£o na faixa visual */
   aspect-ratio: 760 / 306;
-  /* transparente: o gradiente do .presencialImpact__masthead aparece onde a máscara some (evita faixa branca) */
+  /* transparente: o gradiente do .presencialImpact__masthead aparece onde a mÃ¡scara some (evita faixa branca) */
   background: transparent;
 }
 
@@ -711,7 +711,7 @@ img {
     padding: 0;
     box-sizing: border-box;
     min-height: 0;
-    /* proporção bandeira — preenche com cover se a linha ficar mais alta pelo texto */
+    /* proporÃ§Ã£o bandeira â€” preenche com cover se a linha ficar mais alta pelo texto */
   }
 
   .presencialImpact__mastheadCopy {
@@ -739,7 +739,7 @@ img {
   .siteSection.siteSection--presencialImpact .presencialImpact__mastheadPhoto .presencialImpact__mastheadImg {
     object-fit: cover;
     object-position: center;
-    /* mistura à esquerda com o mesmo fundo que o texto (via cartão pai; coluna foto sem tinta própria) */
+    /* mistura Ã  esquerda com o mesmo fundo que o texto (via cartÃ£o pai; coluna foto sem tinta prÃ³pria) */
     -webkit-mask-image: linear-gradient(
       to right,
       transparent 0%,
@@ -826,7 +826,7 @@ img {
     0 0 0 1px color-mix(in srgb, #fff 11%, transparent) inset;
 }
 
-/* Card “Presença comercial …” — hierarquia, checklist e foto fundida ao texto */
+/* Card â€œPresenÃ§a comercial â€¦â€ â€” hierarquia, checklist e foto fundida ao texto */
 .siteSection.siteSection--presencialImpact .visitCard--presence {
   position: relative;
   isolation: isolate;
@@ -922,7 +922,7 @@ img {
 }
 
 .siteSection.siteSection--presencialImpact .featureList.featureList--presence li::before {
-  content: "✓";
+  content: "âœ“";
   top: -1px;
   left: 0;
   width: 24px;
@@ -959,7 +959,7 @@ img {
   .siteSection.siteSection--presencialImpact .presencialImpact__mastheadPhoto .presencialImpact__mastheadImg {
     object-fit: cover;
     object-position: center;
-    /* empilhado: suaviza topo em direção ao card de texto acima */
+    /* empilhado: suaviza topo em direÃ§Ã£o ao card de texto acima */
     -webkit-mask-image: linear-gradient(
       to bottom,
       transparent 0%,
@@ -1023,7 +1023,7 @@ img {
   z-index: -1;
 }
 
-/* Modo claro: faixa bem clara (quase branca) para título/descrição legíveis */
+/* Modo claro: faixa bem clara (quase branca) para tÃ­tulo/descriÃ§Ã£o legÃ­veis */
 :root[data-theme="light"] .siteSection--dark::before {
   background: linear-gradient(
     180deg,
@@ -1068,7 +1068,7 @@ img {
   border-color: color-mix(in srgb, var(--line) 70%, #cbd5e1);
 }
 
-/* Modo claro: contraste forte nos blocos de seção (título + lead + cartões da faixa) */
+/* Modo claro: contraste forte nos blocos de seÃ§Ã£o (tÃ­tulo + lead + cartÃµes da faixa) */
 :root[data-theme="light"] .siteSection--dark .sectionHeader h2,
 :root[data-theme="light"] .siteSection--dark .productCard h3,
 :root[data-theme="light"] .siteSection--dark .onlinePanel h3 {
@@ -1102,7 +1102,7 @@ img {
   color: color-mix(in srgb, var(--muted-band) 52%, var(--accent));
 }
 
-/* Painel “browser” e cartões: no claro não usar vidro escuro (some no fundo da faixa) */
+/* Painel â€œbrowserâ€ e cartÃµes: no claro nÃ£o usar vidro escuro (some no fundo da faixa) */
 :root[data-theme="light"] .siteSection--dark .onlinePanel {
   background: var(--panel-strong);
   border-color: color-mix(in srgb, var(--line) 90%, var(--brand));
@@ -1145,7 +1145,7 @@ img {
   justify-content: center;
 }
 
-/* Coluna da direita: diagrama (texto à esquerda); caps em +40% vs. a linha de base */
+/* Coluna da direita: diagrama (texto Ã  esquerda); caps em +40% vs. a linha de base */
 .structureFigure--hero {
   width: 100%;
   max-width: 100%;
@@ -1229,18 +1229,18 @@ img {
   }
 }
 
-/* Faixa dos pilares (Operação, Dados, …): imagem de fundo com parallax */
+/* Faixa dos pilares (OperaÃ§Ã£o, Dados, â€¦): imagem de fundo com parallax */
 .structurePillarsBand {
   position: relative;
   margin-top: clamp(28px, 4vw, 52px);
   padding: clamp(40px, 5.5vw, 76px) 0;
   overflow: hidden;
   isolation: isolate;
-  /* Garante altura mínima para o layer absoluto (evita colapso) */
+  /* Garante altura mÃ­nima para o layer absoluto (evita colapso) */
   min-height: 220px;
 }
 
-/* Mais alto que a faixa: ao mexer com translate, não aparecem “bordas vazias” */
+/* Mais alto que a faixa: ao mexer com translate, nÃ£o aparecem â€œbordas vaziasâ€ */
 .structurePillarsBand__parallax {
   position: absolute;
   left: 0;
@@ -1260,7 +1260,7 @@ img {
   transform: translateZ(0);
 }
 
-/* Véu leve: deixa a fotografia visível; antes cobria tudo com tom da página (efeito “só azul”) */
+/* VÃ©u leve: deixa a fotografia visÃ­vel; antes cobria tudo com tom da pÃ¡gina (efeito â€œsÃ³ azulâ€) */
 .structurePillarsBand__veil {
   position: absolute;
   inset: 0;
@@ -1283,7 +1283,7 @@ img {
   z-index: 2;
 }
 
-/* Metodologia (infográfico): faixa escura, hub central, trilha azul / dourada */
+/* Metodologia (infogrÃ¡fico): faixa escura, hub central, trilha azul / dourada */
 .structurePillarsBand--methodology {
   min-height: clamp(420px, 52vh, 800px);
   --mp-blue: #38bdf8;
@@ -1292,7 +1292,7 @@ img {
   --mp-amber-glow: rgba(251, 191, 36, 0.42);
   --mp-ink: rgba(248, 250, 252, 0.96);
   --mp-mute: rgba(226, 232, 240, 0.82);
-  /* Estilo da referência: sempre “dark premium”, independente do tema global */
+  /* Estilo da referÃªncia: sempre â€œdark premiumâ€, independente do tema global */
   color: var(--mp-ink);
 }
 
@@ -1305,7 +1305,7 @@ img {
   mix-blend-mode: normal;
 }
 
-/* Tema claro: a fotografia de fundo precisa de mais presença (opacidade baixa + véu denso some com a imagem). */
+/* Tema claro: a fotografia de fundo precisa de mais presenÃ§a (opacidade baixa + vÃ©u denso some com a imagem). */
 :root[data-theme="light"] .structurePillarsBand--methodology .structurePillarsBand__parallax {
   opacity: 0.42;
 }
@@ -1314,7 +1314,7 @@ img {
   background: linear-gradient(180deg, rgba(3, 8, 20, 0.78) 0%, rgba(2, 6, 16, 0.85) 100%);
 }
 
-/* Mantém o véu escuro no tema claro também (bloco de metadologia) */
+/* MantÃ©m o vÃ©u escuro no tema claro tambÃ©m (bloco de metadologia) */
 .structurePillarsBand--methodology .methodologyKicker {
   text-align: center;
   font-size: 0.7rem;
@@ -1355,7 +1355,7 @@ img {
   min-width: 0;
 }
 
-/* Hub estilo instrumento: tons frios, varredura discreta, sem “arco-íris” */
+/* Hub estilo instrumento: tons frios, varredura discreta, sem â€œarco-Ã­risâ€ */
 .methodologyHub {
   --hub-slate: rgba(148, 163, 184, 0.22);
   --hub-cyan: rgba(56, 189, 248, 0.14);
@@ -1400,7 +1400,7 @@ img {
   will-change: transform;
 }
 
-/* Feixe estreito e suave (leitura “radar”, sem saturar) */
+/* Feixe estreito e suave (leitura â€œradarâ€, sem saturar) */
 .methodologyHub__sweep {
   position: absolute;
   inset: 0;
@@ -1472,7 +1472,7 @@ img {
   }
 }
 
-/* Cartões: texto | ícone | imagem — imagem em “bleed” até à borda direita e altura do card (cantos = overflow do card) */
+/* CartÃµes: texto | Ã­cone | imagem â€” imagem em â€œbleedâ€ atÃ© Ã  borda direita e altura do card (cantos = overflow do card) */
 .methodologyPillar {
   position: relative;
   display: flex;
@@ -1500,7 +1500,7 @@ img {
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--mp-amber) 12%, transparent), 0 20px 48px -32px var(--mp-amber-glow);
 }
 
-/* Faixa de imagem: encosta ao topo, fundo e borda direita do card (sem raio próprio: recorte pelo parent) */
+/* Faixa de imagem: encosta ao topo, fundo e borda direita do card (sem raio prÃ³prio: recorte pelo parent) */
 .methodologyPillar__media {
   position: relative;
   flex: 0 0 min(32%, 220px);
@@ -1522,7 +1522,7 @@ img {
   height: 100%;
 }
 
-/* Fundo se a imagem ainda não existir */
+/* Fundo se a imagem ainda nÃ£o existir */
 .methodologyPillar__mediaFallback {
   position: absolute;
   inset: 0;
@@ -1720,7 +1720,7 @@ img {
   }
 }
 
-/* Mesma linha; compacta tipografia; imagem continua a “bleed” à direita */
+/* Mesma linha; compacta tipografia; imagem continua a â€œbleedâ€ Ã  direita */
 @media (max-width: 480px) {
   .methodologyPillar {
     gap: 6px;
@@ -1911,7 +1911,7 @@ img {
 
 .featureList li::before,
 .contractCard li::before {
-  content: "•";
+  content: "â€¢";
   position: absolute;
   left: 0;
   top: -1px;
@@ -2002,7 +2002,7 @@ button.productCard.productCard--ecosystem.isSelected {
   max-width: 64ch;
 }
 
-/* Imagem de destaque por solução — clique abre o lightbox (`ecossistema-*.png` em public/images/) */
+/* Imagem de destaque por soluÃ§Ã£o â€” clique abre o lightbox (`ecossistema-*.png` em public/images/) */
 .ecosystemDashSlot {
   margin: 0 0 24px;
   width: 100%;
@@ -2103,7 +2103,7 @@ button.productCard.productCard--ecosystem.isSelected {
   overflow: visible;
 }
 
-/* Comparativo lado a lado (Grejo): barra vertical arrastável */
+/* Comparativo lado a lado (Grejo): barra vertical arrastÃ¡vel */
 .compareSliderOuter {
   width: 100%;
 }
@@ -2145,7 +2145,7 @@ button.productCard.productCard--ecosystem.isSelected {
 .compareSlider {
   position: relative;
   width: 100%;
-  /* Mais alto que antes (painéis Grejo ~860×570 / 1024×843 — modal comparativo usa mais viewport) */
+  /* Mais alto que antes (painÃ©is Grejo ~860Ã—570 / 1024Ã—843 â€” modal comparativo usa mais viewport) */
   aspect-ratio: 1200 / 720;
   overflow: hidden;
   border-radius: 18px;
@@ -2258,7 +2258,7 @@ button.productCard.productCard--ecosystem.isSelected {
   background: rgba(30, 41, 59, 0.98);
 }
 
-/* Ecossistema: 1ª linha 2 cards; demais linhas em pares; último card em linha inteira se a quantidade for ímpar */
+/* Ecossistema: 1Âª linha 2 cards; demais linhas em pares; Ãºltimo card em linha inteira se a quantidade for Ã­mpar */
 .ecosystemChannelGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2677,7 +2677,7 @@ button.productCard.productCard--ecosystem.isSelected {
   border-top: 1px solid var(--line);
 }
 
-/* Empilhado: altura definida pela proporção (fill do Next/Image) */
+/* Empilhado: altura definida pela proporÃ§Ã£o (fill do Next/Image) */
 @media (max-width: 899px) {
   .visitLayout--stack .visitCard__photo {
     aspect-ratio: 4 / 3;
@@ -2706,7 +2706,7 @@ button.productCard.productCard--ecosystem.isSelected {
     align-self: stretch;
   }
 
-  /* Imagem preenche a coluna com a mesma altura do bloco de texto (sem min. forçado em vh/px) */
+  /* Imagem preenche a coluna com a mesma altura do bloco de texto (sem min. forÃ§ado em vh/px) */
   .visitLayout--balanced .visitCard__photo,
   .visitLayout--stack .visitCard__photo {
     aspect-ratio: auto;
@@ -2741,7 +2741,7 @@ button.productCard.productCard--ecosystem.isSelected {
   overflow: hidden;
 }
 
-/* Mapa: sem “caixa” colorida — alinhado ao fundo da secção */
+/* Mapa: sem â€œcaixaâ€ colorida â€” alinhado ao fundo da secÃ§Ã£o */
 .visitLayout .mapCard {
   background: transparent;
   border: none;
@@ -3104,7 +3104,7 @@ button.productCard.productCard--ecosystem.isSelected {
   gap: 14px;
 }
 
-/* Showcase clientes — mural transparente */
+/* Showcase clientes â€” mural transparente */
 .partnerShowcase {
   margin-top: clamp(12px, 2vw, 24px);
   padding: 0;
@@ -3262,7 +3262,7 @@ button.productCard.productCard--ecosystem.isSelected {
   align-items: flex-start;
 }
 
-/* Diferenciais — grade editorial: faixa lateral, superfície sóbria, pouco “neon” */
+/* Diferenciais â€” grade editorial: faixa lateral, superfÃ­cie sÃ³bria, pouco â€œneonâ€ */
 .diffVault {
   margin-top: clamp(8px, 2vw, 20px);
 }
@@ -4242,3 +4242,68 @@ button.productCard.productCard--ecosystem.isSelected {
     justify-content: flex-start;
   }
 }
+
+/* â€”â€”â€” PÃ¡gina Home (`/`) â€”â€”â€” */
+.homeShell .mainNav.mainNav--home {
+  display: inline-flex !important;
+  position: static;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.homeShell .menuButton {
+  display: none !important;
+}
+
+.mainNavHomeActive {
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.homeLanding {
+  min-height: clamp(360px, 62vh, 620px);
+  display: grid;
+  place-items: center;
+}
+
+.homeLandingInner {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.homeLanding h1 {
+  margin: 0 0 16px;
+  font-size: clamp(1.75rem, 4.8vw, 2.65rem);
+  letter-spacing: -0.04em;
+  line-height: 1.12;
+}
+
+.homeLandingLead {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.75;
+  font-size: clamp(1rem, 1.55vw, 1.12rem);
+}
+
+.footerWrap.footerWrap--home {
+  grid-template-columns: 1fr;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.footerWrap.footerWrap--home .footerTagline {
+  max-width: 52ch;
+}
+
+@media (max-width: 820px) {
+  .homeShell.grupoInst .menuButton.grupoInst__menuBtn {
+    display: inline-flex !important;
+  }
+}
+
