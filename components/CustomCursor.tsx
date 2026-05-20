@@ -48,7 +48,7 @@ const TEXT_SELECTOR = [
 ].join(", ");
 
 const CURSOR_LOGOS = [
-  "/logos/ponteiro-mouse/abe.svg",
+  "/logos/ponteiro-mouse/ABE.svg",
   "/logos/ponteiro-mouse/Avantpay.svg",
   "/logos/ponteiro-mouse/Grejoadv.svg",
   "/logos/ponteiro-mouse/Acordoseguro.svg",
@@ -173,8 +173,15 @@ export function CustomCursor() {
       clearIdleTimer();
     };
 
-    const down = () => document.body.classList.add("custom-cursor--press");
-    const up = () => document.body.classList.remove("custom-cursor--press");
+    const down = () => {
+      document.body.classList.add("custom-cursor--press");
+      stopIdle();
+      clearIdleTimer();
+    };
+    const up = () => {
+      document.body.classList.remove("custom-cursor--press");
+      scheduleIdle();
+    };
 
     document.addEventListener("mousemove", move, { passive: true });
     document.documentElement.addEventListener("mouseleave", leaveWindow);
