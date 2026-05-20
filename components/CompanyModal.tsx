@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ExternalLink, X } from "lucide-react";
+import Image from "next/image";
 import { useEffect } from "react";
 import type { CompanyCard } from "@/components/CompaniesSection";
 
@@ -42,11 +43,19 @@ export default function CompanyModal({ open, onOpenChange, company }: CompanyMod
         </button>
 
         <div className="company-modal-header">
+          <div className="company-modal-brand">
+            <Image
+              src={company.logoSrc}
+              alt={company.logoAlt}
+              width={company.modalLogoWidth}
+              height={company.modalLogoHeight}
+              className="company-modal-title-logo"
+            />
+          </div>
           <div className="company-modal-header-top">
             <div className="company-modal-step-pill">{company.step}</div>
             <span className="company-modal-badge">{company.tag}</span>
           </div>
-          <h3 className="company-modal-title">{company.name}</h3>
           <p className="company-modal-headline">{company.headline}</p>
         </div>
 

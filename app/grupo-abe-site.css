@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap");
 
 
 /* ── TOKENS ─────────────────────────────────────────────────── */
@@ -217,23 +217,64 @@
   animation: fadeUp .9s var(--ease) .8s forwards;
 }
 .chip {
-  display: flex; align-items: center; gap: .5rem;
-  font-size: .75rem; font-weight: 500;
-  letter-spacing: .08em; text-transform: uppercase;
-  padding: .5rem 1.25rem;
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  background: var(--border2);
-  color: var(--text2);
-  transition: all .3s var(--ease);
+  --chip-accent: var(--gold);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .76rem;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  padding: .58rem 1.28rem;
+  border: 1px solid color-mix(in srgb, var(--chip-accent) 34%, var(--border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--chip-accent) 12%, var(--bg2));
+  color: color-mix(in srgb, var(--chip-accent) 72%, var(--text));
+  box-shadow: 0 8px 24px -20px color-mix(in srgb, var(--chip-accent) 55%, transparent);
+  transition:
+    transform .28s var(--ease),
+    border-color .28s var(--ease),
+    color .28s var(--ease),
+    background .28s var(--ease),
+    box-shadow .28s var(--ease);
+}
+.chip::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  background: linear-gradient(120deg, transparent 15%, color-mix(in srgb, var(--chip-accent) 50%, white) 48%, transparent 78%);
+  transform: translateX(-70%);
+  transition: opacity .28s var(--ease), transform .45s var(--ease);
 }
 .chip:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: rgba(200,160,100,.08);
-  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--chip-accent) 66%, var(--border));
+  color: color-mix(in srgb, var(--chip-accent) 86%, white);
+  background: color-mix(in srgb, var(--chip-accent) 18%, var(--bg2));
+  box-shadow: 0 20px 34px -24px color-mix(in srgb, var(--chip-accent) 60%, transparent);
+  transform: translateY(-3px) scale(1.02);
 }
-.chip strong { color: var(--text); font-weight: 600; }
+.chip:hover::before {
+  opacity: .45;
+  transform: translateX(58%);
+}
+.chip strong {
+  color: color-mix(in srgb, var(--text) 90%, white);
+  font-weight: 700;
+}
+.chip:nth-child(1) { --chip-accent: #153981; }
+.chip:nth-child(2) { --chip-accent: #BD9941; }
+.chip:nth-child(3) { --chip-accent: #213359; }
+.chip:nth-child(4) { --chip-accent: #4A4E69; }
+.chip:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--chip-accent) 75%, white);
+  outline-offset: 2px;
+}
 .hero-ctas {
   display: flex; flex-wrap: wrap;
   justify-content: center; gap: 1rem;
@@ -468,10 +509,10 @@
   --tone-soft: color-mix(in srgb, var(--gold) 12%, transparent);
   position: relative;
 }
-.journey-step.is-emerald { --tone: #34d399; --tone-soft: rgba(52,211,153,.14); }
-.journey-step.is-blue { --tone: #60a5fa; --tone-soft: rgba(96,165,250,.14); }
-.journey-step.is-violet { --tone: #a78bfa; --tone-soft: rgba(167,139,250,.14); }
-.journey-step.is-amber { --tone: #f59e0b; --tone-soft: rgba(245,158,11,.14); }
+.journey-step.is-emerald { --tone: #153981; --tone-soft: rgba(209,176,117,.2); }  /* AvantPay */
+.journey-step.is-blue { --tone: #c8a064; --tone-soft: rgba(200,160,100,.18); }   /* ABE (dourado) */
+.journey-step.is-violet { --tone: #1d4ed8; --tone-soft: rgba(29,78,216,.16); }   /* Acordo Seguro (azul) */
+.journey-step.is-amber { --tone: #4A4E69; --tone-soft: rgba(74,78,105,.2); }   /* Grejo Advogados */
 .journey-dot {
   display: none;
   position: absolute;
@@ -520,10 +561,19 @@
   padding: .26rem .62rem;
 }
 .journey-company {
-  font-size: .72rem;
-  color: var(--text3);
-  letter-spacing: .06em;
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+}
+.journey-company-logo {
+  width: auto;
+  height: auto;
+  max-height: 22px;
+  object-fit: contain;
+  opacity: .96;
+}
+.journey-company-logo--acordo {
+  max-height: 26px;
 }
 .journey-step-title {
   display: flex;
@@ -559,11 +609,6 @@
 .journey-link-icon {
   width: 14px;
   height: 14px;
-}
-.journey-link-note {
-  color: var(--text3);
-  font-size: .7rem;
-  font-weight: 400;
 }
 @media (min-width: 1024px) {
   .journey-line,
@@ -615,6 +660,8 @@
   gap: 1.25rem;
 }
 .company-card {
+  --company-accent: var(--gold);
+  --company-soft: rgba(200,160,100,.14);
   position: relative;
   border-radius: 16px;
   border: 1px solid var(--border2);
@@ -626,8 +673,8 @@
 }
 .company-card:hover {
   transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--gold) 36%, var(--border2));
-  box-shadow: 0 28px 64px -42px rgba(0,0,0,.55);
+  border-color: color-mix(in srgb, var(--company-accent) 42%, var(--border2));
+  box-shadow: 0 28px 64px -42px color-mix(in srgb, var(--company-accent) 28%, rgba(0,0,0,.55));
 }
 .company-card-topline {
   position: absolute;
@@ -637,10 +684,25 @@
   height: 2px;
   opacity: .85;
 }
-.company-card.is-blue .company-card-topline { background: linear-gradient(90deg, rgba(96,165,250,.75), transparent 80%); }
-.company-card.is-emerald .company-card-topline { background: linear-gradient(90deg, rgba(52,211,153,.75), transparent 80%); }
-.company-card.is-amber .company-card-topline { background: linear-gradient(90deg, rgba(245,158,11,.75), transparent 80%); }
-.company-card.is-violet .company-card-topline { background: linear-gradient(90deg, rgba(167,139,250,.75), transparent 80%); }
+.company-card.is-blue {
+  --company-accent: #BD9941;
+  --company-soft: rgba(189,153,65,.16);
+}
+.company-card.is-emerald {
+  --company-accent: #153981;
+  --company-soft: rgba(209,176,117,.18);
+}
+.company-card.is-amber {
+  --company-accent: #4A4E69;
+  --company-soft: rgba(74,78,105,.16);
+}
+.company-card.is-violet {
+  --company-accent: #213359;
+  --company-soft: rgba(33,51,89,.16);
+}
+.company-card .company-card-topline {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--company-accent) 85%, white), transparent 80%);
+}
 .company-card-body {
   padding: 1.35rem;
 }
@@ -659,8 +721,8 @@
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--bg2) 65%, transparent);
-  border: 1px solid var(--border2);
+  background: color-mix(in srgb, var(--company-accent) 16%, var(--bg2));
+  border: 1px solid color-mix(in srgb, var(--company-accent) 34%, var(--border2));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -669,10 +731,10 @@
   width: 18px;
   height: 18px;
 }
-.company-card-icon.is-blue { color: #60a5fa; }
-.company-card-icon.is-emerald { color: #34d399; }
-.company-card-icon.is-amber { color: #f59e0b; }
-.company-card-icon.is-violet { color: #a78bfa; }
+.company-card-icon.is-blue { color: #BD9941; }
+.company-card-icon.is-emerald { color: #153981; }
+.company-card-icon.is-amber { color: #4A4E69; }
+.company-card-icon.is-violet { color: #213359; }
 .company-card-tag {
   display: block;
   font-family: "DM Mono", monospace;
@@ -682,9 +744,16 @@
   color: var(--gold);
 }
 .company-card-name {
-  font-size: 1rem;
-  line-height: 1.25;
-  margin: .2rem 0 0;
+  margin: .22rem 0 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+.company-card-logo {
+  width: auto;
+  height: auto;
+  max-height: 26px;
+  object-fit: contain;
 }
 .company-card-arrowWrap {
   width: 30px;
@@ -692,7 +761,7 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--bg2) 70%, transparent);
   border: 1px solid var(--border2);
-  color: var(--gold);
+  color: var(--company-accent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -700,7 +769,7 @@
 .company-card-headline {
   font-size: .9rem;
   line-height: 1.55;
-  color: var(--text);
+  color: color-mix(in srgb, var(--company-accent) 34%, var(--text));
   margin: 0 0 .7rem;
 }
 .company-card-description {
@@ -727,9 +796,9 @@
 .company-card-chips span {
   font-size: .67rem;
   line-height: 1.2;
-  color: var(--text2);
-  border: 1px solid var(--border2);
-  background: color-mix(in srgb, var(--bg2) 72%, transparent);
+  color: color-mix(in srgb, var(--company-accent) 46%, var(--text2));
+  border: 1px solid color-mix(in srgb, var(--company-accent) 24%, var(--border2));
+  background: color-mix(in srgb, var(--company-soft) 55%, var(--bg2));
   border-radius: 999px;
   padding: .26rem .5rem;
 }
@@ -738,15 +807,15 @@
   height: 28px;
   border-radius: 999px;
   border: 1px solid var(--border2);
-  color: var(--gold);
-  background: color-mix(in srgb, var(--bg2) 68%, transparent);
+  color: var(--company-accent);
+  background: color-mix(in srgb, var(--company-soft) 50%, var(--bg2));
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 .company-card-link:hover {
-  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  border-color: color-mix(in srgb, var(--company-accent) 55%, transparent);
 }
 
 .company-modal-overlay {
@@ -794,20 +863,30 @@
 .company-modal-header {
   margin-bottom: 1rem;
 }
+.company-modal-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border2);
+  background: color-mix(in srgb, var(--bg2) 62%, transparent);
+  border-radius: 12px;
+  padding: .5rem .7rem;
+  margin-bottom: .75rem;
+}
 .company-modal-header-top {
   display: flex;
   align-items: center;
   gap: .6rem;
-  margin-bottom: .6rem;
+  margin-bottom: .55rem;
 }
 .company-modal-step-pill {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   background: color-mix(in srgb, var(--gold) 14%, transparent);
   color: var(--gold);
   font-weight: 700;
-  font-size: .85rem;
+  font-size: .78rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -821,13 +900,13 @@
   border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
   background: color-mix(in srgb, var(--gold) 10%, transparent);
   border-radius: 999px;
-  padding: .26rem .62rem;
+  padding: .22rem .58rem;
 }
-.company-modal-title {
-  font-family: "Playfair Display", serif;
-  font-size: clamp(1.45rem, 2vw, 1.9rem);
-  line-height: 1.2;
-  margin: 0 0 .35rem;
+.company-modal-title-logo {
+  width: auto;
+  height: auto;
+  max-height: 34px;
+  object-fit: contain;
 }
 .company-modal-headline {
   color: var(--text2);
@@ -1034,10 +1113,37 @@
 
 /* ── CREDIBILIDADE ──────────────────────────────────────────── */
 #credibilidade {
+  position: relative;
+  overflow: hidden;
   background: var(--bg);
   text-align: center;
 }
-.cred-inner { max-width: 780px; margin: 0 auto; }
+#credibilidade::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/images/home-page/credito-corporativo.png") center/cover no-repeat;
+  opacity: 0.42;
+  pointer-events: none;
+}
+#credibilidade::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 64%, transparent), color-mix(in srgb, var(--bg) 82%, transparent));
+  pointer-events: none;
+}
+[data-theme="light"] #credibilidade::before {
+  opacity: 0.3;
+}
+[data-theme="light"] #credibilidade::after {
+  background: linear-gradient(180deg, rgba(247, 244, 239, 0.62), rgba(247, 244, 239, 0.8));
+}
+#credibilidade .container {
+  position: relative;
+  z-index: 1;
+}
+.cred-inner { max-width: 780px; margin: 0 auto; position: relative; z-index: 2; }
 .cred-inner h2 { margin-bottom: 1.5rem; }
 .cred-inner p {
   font-size: 1rem; line-height: 1.85;
@@ -1415,12 +1521,16 @@
 
 /* Tema claro — contraste (textos “sumindo” em fundos claros) */
 [data-theme="light"] .grupoAbeSiteRoot .chip {
-  color: var(--text2);
-  border-color: color-mix(in srgb, var(--text) 18%, transparent);
-  background: color-mix(in srgb, var(--text) 4%, var(--card-bg));
+  color: color-mix(in srgb, var(--chip-accent) 78%, var(--text));
+  border-color: color-mix(in srgb, var(--chip-accent) 36%, color-mix(in srgb, var(--text) 18%, transparent));
+  background: color-mix(in srgb, var(--chip-accent) 10%, var(--card-bg));
 }
 [data-theme="light"] .grupoAbeSiteRoot .chip strong {
   color: var(--text);
+}
+[data-theme="light"] .grupoAbeSiteRoot .chip:hover {
+  border-color: color-mix(in srgb, var(--chip-accent) 72%, var(--text));
+  background: color-mix(in srgb, var(--chip-accent) 18%, #ffffff);
 }
 [data-theme="light"] .grupoAbeSiteRoot .hero-sub,
 [data-theme="light"] .grupoAbeSiteRoot .section-intro {
@@ -1472,7 +1582,13 @@
 /* Logos */
 .nav-logo-link { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; color: inherit; }
 .nav-logo-img { height: 40px; width: auto; display: block; object-fit: contain; }
-.nav-logo-word { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; letter-spacing: .05em; color: var(--text); font-weight: 400; }
+.nav-logo-word {
+  font-family: "Plus Jakarta Sans", "DM Sans", sans-serif;
+  font-size: 1.32rem;
+  font-weight: 900;  
+  letter-spacing: .02em;
+  color: var(--text);
+}
 .empresa-logo-img { max-height: 48px; width: auto; max-width: 200px; object-fit: contain; }
 .footer-brand { display: flex; align-items: center; gap: 0.75rem; }
 .footer-logo-img { height: 36px; width: auto; object-fit: contain; opacity: 0.95; }
@@ -1535,21 +1651,36 @@
 }
 .footer-v2-brand {
   max-width: 34ch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .45rem;
+}
+.footer-v2-brand-head {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
 }
 .footer-v2-brand-title {
-  margin: 0 0 .65rem;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: -.01em;
+  margin: 0;
+  font-family: "Plus Jakarta Sans", "DM Sans", sans-serif;
+  font-size: 1.22rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-transform: uppercase;
   color: var(--text);
 }
-.footer-v2-brand-title span {
-  color: var(--gold);
+.footer-v2-brand-logo {
+  width: auto;
+  height: 34px;
+  object-fit: contain;
 }
 .footer-v2-brand-text {
-  margin: 0;
+  margin: .3rem 0 0;
   font-size: .8rem;
   line-height: 1.7;
+  text-align: left;
+  align-self: stretch;
   color: var(--text2);
 }
 .footer-v2-col-title {
@@ -1617,9 +1748,6 @@
 [data-theme="light"] .footer-v2-brand-title {
   color: color-mix(in srgb, var(--text) 94%, #000);
 }
-[data-theme="light"] .footer-v2-brand-title span {
-  color: color-mix(in srgb, var(--gold) 72%, var(--text));
-}
 [data-theme="light"] .footer-v2-brand-text {
   color: color-mix(in srgb, var(--text2) 90%, var(--text));
 }
@@ -1650,9 +1778,6 @@
 }
 [data-theme="dark"] .footer-v2-brand-title {
   color: color-mix(in srgb, var(--text) 97%, #fff);
-}
-[data-theme="dark"] .footer-v2-brand-title span {
-  color: color-mix(in srgb, var(--gold-light) 86%, var(--gold));
 }
 [data-theme="dark"] .footer-v2-brand-text {
   color: color-mix(in srgb, var(--text2) 92%, var(--text));

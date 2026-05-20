@@ -1,6 +1,7 @@
 "use client";
 
 import { ExternalLink } from "lucide-react";
+import Image from "next/image";
 
 const companies = [
   { name: "ABE", url: "https://abe.com.br/" },
@@ -25,9 +26,10 @@ export default function FooterSection() {
       <div className="footer-v2-inner">
         <div className="footer-v2-top">
           <div className="footer-v2-brand">
-            <p className="footer-v2-brand-title">
-              Grupo <span>ABE</span>
-            </p>
+            <div className="footer-v2-brand-head">
+              <p className="footer-v2-brand-title">Grupo</p>
+              <Image src="/logos/ponteiro-mouse/ABE.svg" alt="ABE" width={120} height={40} className="footer-v2-brand-logo" />
+            </div>
             <p className="footer-v2-brand-text">
               O Grupo ABE é formado por quatro empresas independentes — ABE, AvantPay, Grejo Sociedade de Advogados e Acordo Seguro —
               cada uma com CNPJ, domínio e operação próprios.

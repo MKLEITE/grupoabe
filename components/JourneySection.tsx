@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import { ExternalLink, Globe, Radio, Scale, Shield } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
@@ -9,6 +10,10 @@ type JourneyStep = {
   num: string;
   tag: string;
   company: string;
+  companyLogoSrc: string;
+  companyLogoAlt: string;
+  companyLogoWidth: number;
+  companyLogoHeight: number;
   title: string;
   icon: LucideIcon;
   description: string;
@@ -22,6 +27,10 @@ const steps: JourneyStep[] = [
     num: "01",
     tag: "Preventivo",
     company: "AvantPay",
+    companyLogoSrc: "/logos/avantpay.png",
+    companyLogoAlt: "AvantPay",
+    companyLogoWidth: 88,
+    companyLogoHeight: 22,
     title: "Antecipar o vencimento",
     icon: Radio,
     description:
@@ -34,6 +43,10 @@ const steps: JourneyStep[] = [
     num: "02",
     tag: "Operação",
     company: "ABE",
+    companyLogoSrc: "/logos/abe.png",
+    companyLogoAlt: "ABE",
+    companyLogoWidth: 72,
+    companyLogoHeight: 22,
     title: "Entrar quando há inadimplência",
     icon: Shield,
     description:
@@ -46,6 +59,10 @@ const steps: JourneyStep[] = [
     num: "03",
     tag: "Digital",
     company: "Acordo Seguro",
+    companyLogoSrc: "/logos/acordo-seguro.png",
+    companyLogoAlt: "Acordo Seguro",
+    companyLogoWidth: 126,
+    companyLogoHeight: 26,
     title: "Negociar sem fricção",
     icon: Globe,
     description:
@@ -58,6 +75,10 @@ const steps: JourneyStep[] = [
     num: "04",
     tag: "Jurídico",
     company: "Grejo Advogados",
+    companyLogoSrc: "/logos/grejo.png",
+    companyLogoAlt: "Grejo Advogados",
+    companyLogoWidth: 94,
+    companyLogoHeight: 22,
     title: "Estratégia jurídica quando o caso exige rigor",
     icon: Scale,
     description:
@@ -105,7 +126,15 @@ export default function JourneySection() {
                     <div className="journey-head">
                       <span className="journey-num">{step.num}</span>
                       <span className="journey-tag">{step.tag}</span>
-                      <span className="journey-company">{step.company}</span>
+                      <span className="journey-company">
+                        <Image
+                          src={step.companyLogoSrc}
+                          alt={step.companyLogoAlt}
+                          width={step.companyLogoWidth}
+                          height={step.companyLogoHeight}
+                          className={`journey-company-logo${step.num === "03" ? " journey-company-logo--acordo" : ""}`}
+                        />
+                      </span>
                     </div>
 
                     <h3 className="journey-step-title">
@@ -118,7 +147,6 @@ export default function JourneySection() {
                     <a href={step.url} target="_blank" rel="noopener noreferrer" className="journey-link">
                       {step.urlLabel}
                       <ExternalLink className="journey-link-icon" />
-                      <span className="journey-link-note">(abre em nova aba)</span>
                     </a>
                   </article>
                 </motion.div>

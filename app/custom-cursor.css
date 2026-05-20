@@ -14,14 +14,18 @@
   position: fixed;
   left: 0;
   top: 0;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   margin: 0;
   border: 1.5px solid color-mix(in srgb, var(--accent-2) 85%, #888);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   opacity: 0;
   background: color-mix(in srgb, var(--accent-2) 12%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
   transition:
     width 0.22s cubic-bezier(0.16, 1, 0.3, 1),
     height 0.22s cubic-bezier(0.16, 1, 0.3, 1),
@@ -35,17 +39,89 @@ body.custom-cursor--enabled.custom-cursor--visible #custom-cursor-ring {
   opacity: 0.72;
 }
 
+body.custom-cursor--enabled.custom-cursor--visible.custom-cursor--text #custom-cursor-ring {
+  width: 5px;
+  height: 36px;
+  border-radius: 6px;
+  border-color: color-mix(in srgb, var(--accent-2) 92%, #a6a6a6);
+  background: color-mix(in srgb, var(--accent-2) 24%, transparent);
+  transform: translate(-50%, -50%);
+  overflow: visible;
+}
+
+body.custom-cursor--enabled.custom-cursor--visible.custom-cursor--idle #custom-cursor-ring {
+  opacity: 0.95;
+  border-color: transparent;
+  background: transparent;
+}
+
 body.custom-cursor--enabled.custom-cursor--visible.custom-cursor--hover #custom-cursor-ring {
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   opacity: 1;
   background: color-mix(in srgb, var(--accent-2) 18%, transparent);
 }
 
 body.custom-cursor--enabled.custom-cursor--press #custom-cursor-ring {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   opacity: 1;
+}
+
+.custom-cursor-logo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.custom-cursor-logo-image {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18));
+  animation: cursorLogoRollIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.custom-cursor-logo-image.is-abe {
+  width: 34px;
+  height: 34px;
+}
+
+body.custom-cursor--enabled.custom-cursor--visible.custom-cursor--text.custom-cursor--idle .custom-cursor-logo-image {
+  width: 30px;
+  height: 30px;
+}
+body.custom-cursor--enabled.custom-cursor--visible.custom-cursor--text.custom-cursor--idle .custom-cursor-logo-image.is-abe {
+  width: 42px;
+  height: 42px;
+}
+
+body.custom-cursor--enabled.custom-cursor--visible.custom-cursor--idle .custom-cursor-logo.is-active {
+  opacity: 1;
+}
+
+body.custom-cursor--enabled.custom-cursor--hover .custom-cursor-logo,
+body.custom-cursor--enabled.custom-cursor--press .custom-cursor-logo,
+body.custom-cursor--enabled.custom-cursor--text .custom-cursor-logo {
+  opacity: 0 !important;
+}
+
+@keyframes cursorLogoRollIn {
+  0% {
+    opacity: 0;
+    transform: translateY(9px) rotateX(-70deg) scale(0.78);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-2px) rotateX(10deg) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0) scale(1);
+  }
 }
 
 /* Esconder cursor nativo só quando o modo custom está ativo */

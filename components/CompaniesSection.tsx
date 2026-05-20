@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import { ArrowRight, ExternalLink, Globe, Radio, Scale, Shield } from "lucide-react";
 import { useState } from "react";
@@ -11,6 +12,12 @@ export type CompanyCard = {
   step: string;
   tag: string;
   name: string;
+  logoSrc: string;
+  logoAlt: string;
+  logoWidth: number;
+  logoHeight: number;
+  modalLogoWidth: number;
+  modalLogoHeight: number;
   icon: LucideIcon;
   headline: string;
   description: string;
@@ -26,6 +33,12 @@ const companies: CompanyCard[] = [
     step: "01",
     tag: "Operação",
     name: "ABE",
+    logoSrc: "/logos/abe.png",
+    logoAlt: "ABE",
+    logoWidth: 76,
+    logoHeight: 24,
+    modalLogoWidth: 120,
+    modalLogoHeight: 38,
     icon: Shield,
     headline: "Operação nacional de cobrança com método e governança",
     description:
@@ -45,6 +58,12 @@ const companies: CompanyCard[] = [
     step: "02",
     tag: "Preventivo",
     name: "AvantPay",
+    logoSrc: "/logos/avantpay.png",
+    logoAlt: "AvantPay",
+    logoWidth: 92,
+    logoHeight: 24,
+    modalLogoWidth: 136,
+    modalLogoHeight: 36,
     icon: Radio,
     headline: "Pré-cobrança inteligente antes do vencimento",
     description:
@@ -64,6 +83,12 @@ const companies: CompanyCard[] = [
     step: "03",
     tag: "Jurídico",
     name: "Grejo Sociedade de Advogados",
+    logoSrc: "/logos/grejo.png",
+    logoAlt: "Grejo Advogados",
+    logoWidth: 118,
+    logoHeight: 24,
+    modalLogoWidth: 172,
+    modalLogoHeight: 36,
     icon: Scale,
     headline: "Direito empresarial e recuperação de crédito com estratégia",
     description:
@@ -83,6 +108,12 @@ const companies: CompanyCard[] = [
     step: "04",
     tag: "Digital",
     name: "Acordo Seguro",
+    logoSrc: "/logos/acordo-seguro.png",
+    logoAlt: "Acordo Seguro",
+    logoWidth: 128,
+    logoHeight: 28,
+    modalLogoWidth: 188,
+    modalLogoHeight: 40,
     icon: Globe,
     headline: "Portal de negociação digital para credores e devedores",
     description:
@@ -133,8 +164,15 @@ export default function CompaniesSection() {
                         <company.icon className={`company-card-icon ${company.iconClass}`} />
                       </div>
                       <div>
-                        <span className="company-card-tag">{company.tag}</span>
-                        <h3 className="company-card-name">{company.name}</h3>
+                        <h3 className="company-card-name">
+                          <Image
+                            src={company.logoSrc}
+                            alt={company.logoAlt}
+                            width={company.logoWidth}
+                            height={company.logoHeight}
+                            className="company-card-logo"
+                          />
+                        </h3>
                       </div>
                     </div>
                     <motion.div className="company-card-arrowWrap" whileHover={{ scale: 1.1 }}>
