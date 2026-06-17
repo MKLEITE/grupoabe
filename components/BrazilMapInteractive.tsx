@@ -11,6 +11,7 @@ type Loc = { id: string; name: string; path: string };
 type MapData = { viewBox: string; locations: Loc[] };
 
 const NORDESTE = new Set(["MA", "PI", "CE", "RN", "PB", "PE", "AL", "SE", "BA"]);
+const MAP_PERCENT_OFFSET = 2;
 
 /** Percentuais abaixo de 70% passam exclusivamente para 71, 72 ou 75%. */
 const ELEVATE_UNDER_70 = [71, 72, 75] as const;
@@ -40,10 +41,10 @@ function spread(uf: string, min: number, max: number): number {
 type SudesteSul = { spPeak: number; rsVal: number; scVal: number; rjVal: number };
 
 function buildSulSudeste(): SudesteSul {
-  const spPeak = 90 + Math.floor(Math.random() * 2);
-  const rsVal = clamp(spPeak - 4 - Math.floor(Math.random() * 3), 80, 88);
-  const scVal = clamp(Math.min(spPeak - 5 - Math.floor(Math.random() * 3), rsVal - 1), 78, 87);
-  const rjVal = clamp(spPeak - 2 - Math.floor(Math.random() * 3), 82, 90);
+  const spPeak = 90;
+  const rsVal = clamp(spPeak - 4, 80, 88);
+  const scVal = clamp(Math.min(spPeak - 5, rsVal - 1), 78, 87);
+  const rjVal = clamp(spPeak - 2, 82, 90);
   return { spPeak, rsVal, scVal, rjVal };
 }
 
@@ -85,7 +86,8 @@ export function BrazilMapInteractive() {
     const s = buildSulSudeste();
     const m: Record<string, number> = {};
     for (const loc of data.locations) {
-      m[loc.id.toUpperCase()] = elevateIfNeeded(percentForUf(loc.id, s), loc.id);
+      const basePct = elevateIfNeeded(percentForUf(loc.id, s), loc.id);
+      m[loc.id.toUpperCase()] = clamp(basePct - MAP_PERCENT_OFFSET, 0, 100);
     }
     return m;
   }, [data.locations]);

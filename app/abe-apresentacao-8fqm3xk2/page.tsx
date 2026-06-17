@@ -164,9 +164,9 @@ const stories: Record<SegmentName, string> = {
     "Em distribuição, contato direto e velocidade operacional costumam favorecer ligação e visita presencial, especialmente em carteiras mais sensíveis e com maior complexidade comercial.",
 };
 
-/** Faixa de logos em `public/images/clientes/cliente-NN.png` … `cliente-49.png` (dois dígitos). */
+/** Faixa de logos em `public/images/clientes/cliente-NN.png` … `cliente-48.png` (dois dígitos). */
 const CLIENT_LOGO_START: number = 1;
-const CLIENT_LOGO_COUNT: number = 49;
+const CLIENT_LOGO_COUNT: number = 48;
 
 /** Masthead «Cobrança presencial» — faixa Brasil (território nacional). */
 const PRESENCIAL_MASTHEAD_IMAGE = "/images/bandeira-brasil.png";
@@ -198,7 +198,7 @@ const ABE_ONLINE_EMBED_URL = process.env.NEXT_PUBLIC_ABE_ONLINE_IFRAME_URL ?? AB
 
 const contractCards = [
   {
-    title: "Contrato Padrão – Success Fee",
+    title: "Contrato de Comissionamento",
     tag: "Modelo orientado à performance",
     points: [
       "Valor do débito: R$ 10.000,00",
@@ -206,20 +206,20 @@ const contractCards = [
       "Juros negociados: 1,5% a.m.",
       "Valor atualizado: R$ 10.302,25",
       "Honorários contratuais (10%): R$ 1.030,23",
-      "Repasse ao cliente: R$ 9.272,03",
-      "Déficit percebido: R$ 727,97",
+      "Crédito ao Cliente: R$ 9.272,03",
+      "Crédito Final: R$ 727,97",
     ],
   },
   {
-    title: "Contrato Honorário Zero",
+    title: "Contrato de Isenção de Comissionamento",
     tag: "Modelo com preservação do principal",
     points: [
       "Valor do débito: R$ 10.000,00",
       "Aging: 60 dias",
       "Juros negociados: 1,5% a.m.",
       "Valor atualizado: R$ 10.302,25",
-      "Repasse ao cliente: R$ 10.000,00 + custas de protesto, se houver",
-      "Juros ABE negociados com o devedor: R$ 302,25",
+      "Crédito ao Cliente: R$ 10.000,00",
+      "Juros negociados com o Devedor: R$ 302,25",
       "Preserva integralmente o valor principal ao cliente",
     ],
   },
@@ -843,7 +843,7 @@ export default function HomePage() {
                   {card.points.map((point) => (
                     <li key={point}>
                       <span className="contractCard__bullet" aria-hidden />
-                      {point}
+                      {index === 1 && point === "Preserva integralmente o valor principal ao cliente" ? <strong>{point}</strong> : point}
                     </li>
                   ))}
                 </ul>

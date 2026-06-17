@@ -922,7 +922,7 @@ img {
 }
 
 .siteSection.siteSection--presencialImpact .featureList.featureList--presence li::before {
-  content: "âœ“";
+  content: "\2713";
   top: -1px;
   left: 0;
   width: 24px;
@@ -1911,7 +1911,7 @@ img {
 
 .featureList li::before,
 .contractCard li::before {
-  content: "â€¢";
+  content: "\2022";
   position: absolute;
   left: 0;
   top: -1px;
@@ -2760,6 +2760,15 @@ button.productCard.productCard--ecosystem.isSelected {
   color: var(--muted);
 }
 
+/* Home: badges e kickers sem caixa alta */
+#home .heroBadge,
+#online .heroBadge,
+.presencialImpact__chip,
+.mapCard__kicker {
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
 .mapCard__intro {
   margin-top: 10px;
   color: var(--muted);
@@ -3514,12 +3523,29 @@ button.productCard.productCard--ecosystem.isSelected {
 }
 
 .contractCard__tag {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.88;
-  display: block;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  opacity: 1;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  width: fit-content;
+  border: 1px solid transparent;
+}
+
+.contractCard--modern .contractCard__tag {
+  color: color-mix(in srgb, #ffffff 92%, #dbeafe);
+  background: color-mix(in srgb, #ffffff 14%, transparent);
+  border-color: color-mix(in srgb, #ffffff 28%, transparent);
+}
+
+.contractCard--accent.contractCard--modern .contractCard__tag {
+  color: color-mix(in srgb, #22160a 88%, #000);
+  background: color-mix(in srgb, #ffffff 36%, transparent);
+  border-color: color-mix(in srgb, #22160a 22%, transparent);
 }
 
 .contractCard__head h3 {
